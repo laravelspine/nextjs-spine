@@ -1,65 +1,73 @@
 # Rencana Dashboard — nextjs-spine
 
-Sumber: `app.ciptamasjaya.co.id/application/views/admin/dashboard/` (legacy Perfex kustom, bisnis inspeksi/licensi).
+Sumber pola: aplikasi CRM bisnis inspeksi/licensi yang sedang diport —
+arsitektur dashboard-nya dipakai sebagai acuan pola, bukan sebagai kode yang disalin.
 
-## Struktur file legacy
+## Pola dasar (diadopsi dari aplikasi sumber)
 
-```
-views/admin/dashboard/
-├── dashboard.php        (2.2K)  template utama — layout grid + render widget per container
-├── dashboard_js.php     (12K)   JS: drag-drop widget, simpan urutan, refresh
-└── widgets/
-    ├── calendar.php             kalender (Google Calendar IDs dari controller)
-    ├── contracts_expiring.php   kontrak segera habis masa berlaku
-    ├── finance_overview.php     (13K, terbesar) overview invoice/estimate + grafik
-    ├── leads_chart.php          overview lead per status
-    ├── payments_chart.php       rekap pembayaran mingguan
-    ├── projects_activity.php    aktivitas project (timeline)
-    ├── projects_chart.php       project per status
-    ├── tickets_chart.php        tiket menunggu balasan per status/departemen
-    ├── todos.php                todo list pribadi (tambah/selesai)
-    ├── top_stats.php            (8K) quick stats: invoice, estimate, leads, project
-    ├── upcoming_events.php      event minggu ini / minggu depan
-    └── user_data.php            (9K) tab: my tasks, my projects, my tickets
-```
-
-## Layout grid legacy (dashboard.php)
-
-8 kontainer, widget di-render per container oleh `render_dashboard_widgets()`:
+Dashboard = **kumpulan widget area (grid)**, tiap area menampung widget yang
+**diregistrasi oleh modul** — bukan daftar widget hardcoded di halaman.
 
 ```
-top-12            (lebar penuh)   → top_stats
-middle-left-6 / middle-right-6   (2 kolom)   → user_data, calendar, todos
-left-8 / right-4                 → finance_overview (+ charts), upcoming_events
-bottom-left-4 / bottom-middle-4 / bottom-right-4 → projects_activity, charts
+area: top-12            (lebar penuh)    → statistik cepat
+area: middle-left-6     (½)              → widget personal (tugas, kalender, todo)
+area: middle-right-6    (½)
+area: left-8            (⅔)              → widget besar (overview keuangan + grafik)
+area: right-4           (⅓)              → widget samping (event, aktivitas)
+area: bottom-left-4 / bottom-middle-4 / bottom-right-4  → aktivitas + chart
 ```
 
-Hook legacy di sekitar grid: `before_start_render_dashboard_content`,
-`after_dashboard_top_container`, `after_dashboard_half_container`,
-`after_dashboard`.
+Aturan:
+1. **Widget area** adalah kontrak layout — halaman hanya tahu nama area + urutan.
+2. **Widget** didaftarkan oleh modul: `{ id, area, title, icon, component, minWidth }`.
+3. Modul yang belum ada → areanya kosong; tidak merusak layout.
+4. Urutan widget bisa diatur (drag-drop menyusul, lihat bawah).
 
-Widget bisa di-drag antar container; urutan disimpan (dashboard_js.php).
+## Widget legacy → peta implementasi
 
-## Implikasi untuk frontend Spine
+| Widget sumber | Data | Status di Spine |
+|---|---|---|
+| Quick stats (invoice/estimate/lead/project) | per-modul | placeholder sampai modul sales/leads/projects di-port |
+| Finance overview + chart | per-modul | placeholder |
+| User data (my tasks/projects/tickets) | per-modul | placeholder |
+| Todos | resource todo | belum ada endpoint → modul |
+| Calendar / upcoming events | modul kalender | belum ada |
+| Contracts expiring | modul kontrak | belum ada |
+| Leads / projects / tickets charts | per-modul | placeholder |
+| **Activity log (timeline)** | **GET /api/v1/activity-logs** | ✅ bisa sekarang |
 
-- Dashboard Spine memakai layout 2 panel yang sudah ada (sidebar kiri + konten kanan).
-- **Yang relevan sekarang** (data tersedia di API Spine saat ini):
-  - `top_stats` → butuh endpoint statistik (belum ada — nanti modul sales/leads/projects)
-  - `todos` → butuh resource todo (belum ada)
-  - `calendar`/`upcoming_events` → butuh modul kalender
-- **Yang bisa dibuat sekarang** dengan API yang ada:
-  - Widget "Activity Logs" (GET /api/v1/activity-logs) — pengganti projects_activity
-  - Widget "Quick stats" versi generic (count activity-logs, files, tags, settings)
-  - Placeholder kartu per modul yang belum ada (sales, leads, projects, tickets) — dimunculkan saat modul di-port
+## Fase implementasi
 
-## Keputusan
+**Fase 1 — kerangka + widget nyata (sekarang, API yang ada):**
+- `app/dashboard/` → halaman `/dashboard` (pindah dari beranda)
+- Widget area engine: konfigurasi area → render komponen widget
+- Widget `activity-log` (timeline, polling/refresh manual)
+- Widget `quick-stats` generic: count activity-logs, files, tags (dari API yang ada)
+- Widget welcome (user info) — sudah ada
 
-- Jangan port 12 widget sekaligus — widget yang butuh modul (invoice/lead/project/ticket/contract) menunggu modul di-port (konsisten dengan keputusan "module dulu nanti").
-- Dashboard fase 1: "Halo user" (sudah ada) + Activity Logs widget + Quick Stats generic + placeholder modul.
-- Urutan widget diatur via konfigurasi frontend (bukan drag-drop dulu — YAGNI sampai diminta).
+**Fase 2 — registrasi widget per modul:**
+- Saat modul sales/leads/projects/tickets di-port, masing-masing mendaftarkan
+  widget-nya (statistik, chart) ke area yang sesuai
+- Frontend mendukung konfigurasi widget dinamis dari API/konfigurasi modul
+
+**Nanti — personalisasi:**
+- Drag-drop widget antar area + persist urutan (butuh endpoint preferences)
+
+## Arah visual
+
+Konteks: sidebar gelap + konten terang/gelap konsisten (lihat halaman yang
+sudah ada). Target tampilan: dashboard modern ala produk SaaS kelas atas —
+kartu statistik besar dengan aksen warna, timeline aktivitas yang bersih,
+chart minimalis. Acuan gaya (bukan salinan): pola dashboard dari design
+systems populer (Vercel/Linear-style): spacing konsisten, border tipis,
+angka besar tebal, ikon kecil.
+
+Prinsip: **menarik secara visual tanpa mengurangi fungsionalitas** — setiap
+widget legacy punya padanan; yang belum bisa karena modul belum ada
+ditampilkan sebagai placeholder yang jelas, bukan dihilangkan diam-diam.
 
 ## Status
 
-- [ ] Fase 1: dashboard user + widget activity-logs + quick stats generic
+- [ ] Fase 1: kerangka widget area + `/dashboard` + widget activity-log & quick-stats
 - [ ] Fase 2: widget per modul (saat modul di-port)
-- [ ] Nanti: drag-drop widget & persist urutan (butuh API widget-preferences)
+- [ ] Nanti: drag-drop & persist urutan widget
