@@ -19,8 +19,8 @@ Salin ke `.env.local`:
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-Arahkan ke base URL API Spine (tanpa trailing slash) — di lingkungan dev
-lokal bisa menunjuk ke vhost internal, mis. `http://spine.lan`.
+Arahkan ke base URL API Spine (tanpa trailing slash) — sesuaikan dengan
+lingkungan dev lokal Anda.
 
 ## Struktur
 
