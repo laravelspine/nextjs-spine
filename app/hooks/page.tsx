@@ -25,40 +25,40 @@ export default function HooksPage() {
     <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-bold">Registry Hook</h1>
-        <p className="mt-2 text-sm text-zinc-400">
+        <p className="mt-2 text-sm text-ink-muted">
           Semua titik ekstensi Spine memakai{" "}
-          <code className="text-emerald-400">Laravel Events</code>. Listener
-          didaftarkan lewat <code className="text-emerald-400">Event::listen()</code>{" "}
+          <code className="text-accent-strong">Laravel Events</code>. Listener
+          didaftarkan lewat <code className="text-accent-strong">Event::listen()</code>{" "}
           di provider aplikasi/modul.
         </p>
       </header>
 
-      <div className="overflow-x-auto rounded-lg border border-zinc-800">
+      <div className="overflow-x-auto rounded-lg border border-line-soft">
         <table className="w-full text-sm">
-          <thead className="bg-zinc-900 text-left text-zinc-500">
+          <thead className="bg-surface-raised text-left text-ink-faint">
             <tr>
               <th className="px-4 py-2 font-medium">Event</th>
               <th className="px-4 py-2 font-medium">Kapan</th>
               <th className="px-4 py-2 font-medium">Dispatcher</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-800">
+          <tbody className="divide-y divide-line-soft">
             {events.map(([name, when, from]) => (
               <tr key={name}>
-                <td className="px-4 py-2 font-mono text-emerald-400">
+                <td className="px-4 py-2 font-mono text-accent-strong">
                   Spine\Events\{name}
                 </td>
-                <td className="px-4 py-2 text-zinc-400">{when}</td>
-                <td className="px-4 py-2 font-mono text-zinc-500">{from}</td>
+                <td className="px-4 py-2 text-ink-muted">{when}</td>
+                <td className="px-4 py-2 font-mono text-ink-faint">{from}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 text-sm">
-        <h2 className="font-semibold text-emerald-400">Contoh listener</h2>
-        <pre className="mt-2 overflow-x-auto text-xs text-zinc-400">{`// app/Providers/EventServiceProvider.php
+      <div className="rounded-lg border border-line-soft bg-surface-raised p-4 text-sm">
+        <h2 className="font-semibold text-accent-strong">Contoh listener</h2>
+        <pre className="mt-2 overflow-x-auto text-xs text-ink-muted">{`// app/Providers/EventServiceProvider.php
 use Spine\\Events\\PdfCreating;
 
 public function boot(): void

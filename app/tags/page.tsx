@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { Button, Card, EmptyState, ErrorNotice, Input, PageHeader } from "@/lib/ui";
 
 interface Tag {
   id: number;
@@ -54,49 +55,36 @@ export default function TagsPage() {
     load();
   }
 
-  if (loading) return <p className="text-zinc-500">Memuat...</p>;
+  if (loading) return <p className="text-ink-muted">Memuat...</p>;
 
   return (
-    <div className="mx-auto max-w-md space-y-6 pt-8">
-      <header>
-        <h1 className="text-2xl font-bold">Tags</h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          CRUD /api/v1/tags — contoh resource sederhana.
-        </p>
-      </header>
+    <div className="mx-auto max-w-md space-y-6">
+      <PageHeader title="Tags" desc="CRUD /api/v1/tags — contoh resource sederhana." />
 
-      <form onSubmit={onCreate} className="flex gap-3">
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="flex-1 rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm outline-none focus:border-emerald-500"
-          placeholder="Nama tag"
-        />
-        <button
-          type="submit"
-          className="rounded-md bg-emerald-500 px-4 py-2 font-medium text-zinc-950 hover:bg-emerald-400"
-        >
-          Tambah
-        </button>
-      </form>
+      <Card>
+        <form onSubmit={onCreate} className="flex gap-3">
+          <Input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Nama tag"
+          />
+          <Button type="submit">Tambah</Button>
+        </form>
+      </Card>
 
-      {error && (
-        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-400">
-          {error}
-        </div>
-      )}
+      {error && <ErrorNotice message={error} />}
 
       {tags.length === 0 ? (
-        <p className="text-zinc-500">Belum ada tag.</p>
+        <EmptyState message="Belum ada tag." />
       ) : (
-        <ul className="divide-y divide-zinc-800 rounded-lg border border-zinc-800">
+        <ul className="divide-y divide-line-soft rounded-xl border border-line-soft bg-surface-raised">
           {tags.map((tag) => (
             <li key={tag.id} className="flex items-center justify-between px-4 py-3">
-              <span>{tag.name}</span>
+              <span className="text-ink">{tag.name}</span>
               <button
                 onClick={() => onDelete(tag.id)}
-                className="text-sm text-red-400 hover:underline"
+                className="text-sm text-danger hover:underline"
               >
                 Hapus
               </button>

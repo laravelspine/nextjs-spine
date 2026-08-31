@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { api } from "@/lib/api";
+import { Button, Card, ErrorNotice, Field, Input, PageHeader } from "@/lib/ui";
 
 interface QrResult {
   data_uri?: string;
@@ -38,64 +39,49 @@ export default function QrCodePage() {
   }
 
   return (
-    <div className="mx-auto max-w-md space-y-6 pt-8">
-      <header>
-        <h1 className="text-2xl font-bold">QR Code</h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          POST /api/v1/qr-code/generate — contoh tool backend.
-        </p>
-      </header>
+    <div className="mx-auto max-w-md space-y-6">
+      <PageHeader title="QR Code" desc="POST /api/v1/qr-code/generate — contoh tool backend." />
 
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div>
-          <label className="text-sm font-medium">Konten</label>
-          <input
-            type="text"
-            required
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="mt-1 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm outline-none focus:border-emerald-500"
-          />
-        </div>
-        <div>
-          <label className="text-sm font-medium">Ukuran (px)</label>
-          <input
-            type="number"
-            min={50}
-            max={1000}
-            value={size}
-            onChange={(e) => setSize(Number(e.target.value))}
-            className="mt-1 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm outline-none focus:border-emerald-500"
-          />
-        </div>
+      <Card>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <Field label="Konten">
+            <Input
+              type="text"
+              required
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+          </Field>
+          <Field label="Ukuran (px)">
+            <Input
+              type="number"
+              min={50}
+              max={1000}
+              value={size}
+              onChange={(e) => setSize(Number(e.target.value))}
+            />
+          </Field>
 
-        {error && (
-          <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-400">
-            {error}
-          </div>
-        )}
+          {error && <ErrorNotice message={error} />}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-md bg-emerald-500 py-2 font-medium text-zinc-950 hover:bg-emerald-400 disabled:opacity-50"
-        >
-          {loading ? "Generate..." : "Generate QR"}
-        </button>
-      </form>
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "Generate..." : "Generate QR"}
+          </Button>
+        </form>
+      </Card>
 
       {result && (
-        <div className="flex flex-col items-center gap-3 rounded-lg border border-zinc-800 bg-white p-6">
+        <Card className="flex flex-col items-center gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={result} alt="QR Code" width={size} height={size} />
           <a
             href={result}
             download="qr-code.png"
-            className="text-sm text-emerald-400 hover:underline"
+            className="text-sm text-accent-strong hover:underline"
           >
             Unduh PNG
           </a>
-        </div>
+        </Card>
       )}
     </div>
   );

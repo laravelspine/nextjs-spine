@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { api } from "@/lib/api";
+import { Button, Card, ErrorNotice, Field, Input, PageHeader } from "@/lib/ui";
 
 interface ConvertResult {
   words?: string;
@@ -35,45 +36,31 @@ export default function NumberToWordPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md space-y-6 pt-8">
-      <header>
-        <h1 className="text-2xl font-bold">Number to Word</h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          POST /api/v1/number-to-word/convert — contoh tool backend.
-        </p>
-      </header>
+    <div className="mx-auto max-w-md space-y-6">
+      <PageHeader
+        title="Number to Word"
+        desc="POST /api/v1/number-to-word/convert — contoh tool backend."
+      />
 
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div>
-          <label className="text-sm font-medium">Angka</label>
-          <input
-            type="number"
-            step="any"
-            required
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            className="mt-1 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm outline-none focus:border-emerald-500"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-md bg-emerald-500 py-2 font-medium text-zinc-950 hover:bg-emerald-400 disabled:opacity-50"
-        >
-          {loading ? "Mengonversi..." : "Konversi"}
-        </button>
-      </form>
+      <Card>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <Field label="Angka">
+            <Input
+              type="number"
+              step="any"
+              required
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
+            />
+          </Field>
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "Mengonversi..." : "Konversi"}
+          </Button>
+        </form>
+      </Card>
 
-      {result && (
-        <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 text-lg">
-          {result}
-        </div>
-      )}
-      {error && (
-        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-400">
-          {error}
-        </div>
-      )}
+      {result && <Card className="text-lg">{result}</Card>}
+      {error && <ErrorNotice message={error} />}
     </div>
   );
 }

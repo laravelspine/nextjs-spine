@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import { Badge, EmptyState, ErrorNotice, PageHeader } from "@/lib/ui";
 
 interface ActivityLog {
   id: number;
@@ -10,6 +11,12 @@ interface ActivityLog {
   subject_id: number | null;
   causer_id: number | null;
   created_at: string | null;
+}
+
+function toneFor(subjectType: string | null): "accent" | "neutral" | "info" {
+  if (subjectType === "user") return "accent";
+  if (subjectType === "file") return "info";
+  return "neutral";
 }
 
 export default function ActivityLogsPage() {
@@ -29,38 +36,32 @@ export default function ActivityLogsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p className="text-zinc-500">Memuat...</p>;
+  if (loading) return <p className="text-ink-muted">Memuat...</p>;
 
   if (error) {
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">Activity Logs</h1>
-        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-400">
-          {error} — pastikan sudah{" "}
-          <a href="/login" className="underline">
-            login
-          </a>
-          .
-        </div>
+        <PageHeader title="Activity Logs" />
+        <ErrorNotice
+          message={`${error} — pastikan sudah login lewat tautan di sidebar.`}
+        />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold">Activity Logs</h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          GET /api/v1/activity-logs — contoh resource REST.
-        </p>
-      </header>
+      <PageHeader
+        title="Activity Logs"
+        desc="GET /api/v1/activity-logs — contoh resource REST."
+      />
 
       {logs.length === 0 ? (
-        <p className="text-zinc-500">Belum ada aktivitas.</p>
+        <EmptyState message="Belum ada aktivitas." />
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-zinc-800">
+        <div className="overflow-x-auto rounded-xl border border-line-soft">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-900 text-left text-zinc-500">
+            <thead className="bg-surface-raised text-left text-ink-faint">
               <tr>
                 <th className="px-4 py-2 font-medium">#</th>
                 <th className="px-4 py-2 font-medium">Deskripsi</th>
@@ -69,17 +70,25 @@ export default function ActivityLogsPage() {
                 <th className="px-4 py-2 font-medium">Waktu</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800">
+            <tbody className="divide-y divide-line-soft">
               {logs.map((log) => (
                 <tr key={log.id}>
-                  <td className="px-4 py-2 text-zinc-500">{log.id}</td>
-                  <td className="px-4 py-2">{log.description}</td>
-                  <td className="px-4 py-2 text-zinc-500">
-                    {log.subject_type ? `${log.subject_type}:${log.subject_id}` : "—"}
+                  <td className="px-4 py-2 text-ink-faint">{log.id}</td>
+                  <td className="px-4 py-2 text-ink">{log.description}</td>
+                  <td className="px-4 py-2">
+                    {log.subject_type ? (
+                      <Badge tone={toneFor(log.subject_type)}>
+                        {log.subject_type}:{log.subject_id}
+                      </Badge>
+                    ) : (
+                      <span className="text-ink-faint">—</span>
+                    )}
                   </td>
-                  <td className="px-4 py-2 text-zinc-500">{log.causer_id ?? "—"}</td>
-                  <td className="px-4 py-2 text-zinc-500">
-                    {log.created_at ? new Date(log.created_at).toLocaleString("id-ID") : "—"}
+                  <td className="px-4 py-2 text-ink-muted">{log.causer_id ?? "—"}</td>
+                  <td className="px-4 py-2 text-ink-muted">
+                    {log.created_at
+                      ? new Date(log.created_at).toLocaleString("id-ID")
+                      : "—"}
                   </td>
                 </tr>
               ))}

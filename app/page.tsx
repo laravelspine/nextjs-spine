@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { Card } from "@/lib/ui";
 
 const features = [
   {
@@ -34,18 +35,18 @@ export default function Home() {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <p className="text-zinc-500">Memuat...</p>;
+    return <p className="text-ink-muted">Memuat...</p>;
   }
 
   if (user) {
     return (
       <div className="space-y-8">
         <section>
-          <h1 className="text-3xl font-bold">
-            Halo, <span className="text-emerald-400">{user.name}</span>
+          <h1 className="text-3xl font-bold text-ink">
+            Halo, <span className="text-accent-strong">{user.name}</span>
           </h1>
-          <p className="mt-2 text-zinc-400">
-            Login sebagai <code className="text-zinc-300">{user.email}</code> (id {user.id}).
+          <p className="mt-2 text-ink-muted">
+            Login sebagai <code className="text-ink">{user.email}</code> (id {user.id}).
             Pilih menu di sidebar kiri untuk mencoba halaman contoh yang
             mengonsumsi API Spine.
           </p>
@@ -57,10 +58,10 @@ export default function Home() {
   return (
     <div className="space-y-12">
       <section className="pt-8 pb-4">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          Spine<span className="text-emerald-400">.</span>
+        <h1 className="text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+          Spine<span className="text-accent-strong">.</span>
         </h1>
-        <p className="mt-4 max-w-2xl text-lg text-zinc-400">
+        <p className="mt-4 max-w-2xl text-lg text-ink-muted">
           Core package Laravel untuk aplikasi bisnis: auth, settings, files,
           meta, mail, sms, pdf, dan hook event — dipakai bersama oleh semua
           konsumen. Situs ini adalah <em>contoh aplikasi</em> yang mengonsumsi
@@ -70,19 +71,16 @@ export default function Home() {
 
       <section className="grid gap-4 sm:grid-cols-2">
         {features.map((f) => (
-          <div
-            key={f.title}
-            className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 hover:border-emerald-500/40 transition-colors"
-          >
-            <h2 className="font-semibold text-emerald-400">{f.title}</h2>
-            <p className="mt-2 text-sm text-zinc-400">{f.desc}</p>
+          <Card key={f.title} className="hover:border-accent/40 transition-colors">
+            <h2 className="font-semibold text-accent-strong">{f.title}</h2>
+            <p className="mt-2 text-sm text-ink-muted">{f.desc}</p>
             <Link
               href={f.href}
-              className="mt-3 inline-block text-sm font-medium text-zinc-300 hover:text-emerald-400 transition-colors"
+              className="mt-3 inline-block text-sm font-medium text-ink hover:text-accent-strong transition-colors"
             >
               {f.label} →
             </Link>
-          </div>
+          </Card>
         ))}
       </section>
     </div>

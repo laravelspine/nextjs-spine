@@ -1,1 +1,48 @@
 @import "tailwindcss";
+
+/*
+ * Spine design tokens — semantic, satu sumber kebenaran.
+ * Ganti warna di sini → seluruh aplikasi ikut. Jangan hardcode
+ * warna zinc/emerald di komponen; pakai token di bawah.
+ */
+@theme {
+  /* surface */
+  --color-surface: #09090b;          /* bg aplikasi (zinc-950) */
+  --color-surface-raised: #18181b;   /* card, sidebar, panel (zinc-900) */
+  --color-surface-overlay: #27272a;  /* input, hover (zinc-800) */
+  --color-line: #3f3f46;             /* border (zinc-700) */
+  --color-line-soft: #27272a;        /* border tipis (zinc-800) */
+
+  /* text */
+  --color-ink: #f4f4f5;              /* teks utama (zinc-100) */
+  --color-ink-muted: #a1a1aa;        /* teks sekunder (zinc-400) */
+  --color-ink-faint: #71717a;        /* teks tersier (zinc-500) */
+
+  /* accent (brand) */
+  --color-accent: #10b981;           /* emerald-500 */
+  --color-accent-strong: #34d399;    /* emerald-400 (hover) */
+  --color-accent-soft: rgba(16, 185, 129, 0.15);
+  --color-accent-ink: #09090b;       /* teks di atas accent */
+
+  /* status */
+  --color-danger: #ef4444;
+  --color-danger-soft: rgba(239, 68, 68, 0.1);
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+
+  /* geometry */
+  --radius-field: 0.5rem;
+  --radius-card: 0.75rem;
+  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+}
+
+/* base */
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}

@@ -79,26 +79,26 @@ export default function ApiPage() {
     <div className="space-y-8">
       <header>
         <h1 className="text-2xl font-bold">Daftar Endpoint API</h1>
-        <p className="mt-2 text-sm text-zinc-400">
-          Semua endpoint di bawah <code className="text-emerald-400">/api/v1</code>{" "}
-          butuh header <code className="text-emerald-400">Authorization: Bearer &lt;token&gt;</code>{" "}
+        <p className="mt-2 text-sm text-ink-muted">
+          Semua endpoint di bawah <code className="text-accent-strong">/api/v1</code>{" "}
+          butuh header <code className="text-accent-strong">Authorization: Bearer &lt;token&gt;</code>{" "}
           kecuali login/register.
         </p>
       </header>
 
       {groups.map((g) => (
         <section key={g.name}>
-          <h2 className="text-lg font-semibold text-emerald-400">{g.name}</h2>
-          <div className="mt-3 overflow-x-auto rounded-lg border border-zinc-800">
+          <h2 className="text-lg font-semibold text-accent-strong">{g.name}</h2>
+          <div className="mt-3 overflow-x-auto rounded-lg border border-line-soft">
             <table className="w-full text-sm">
-              <thead className="bg-zinc-900 text-left text-zinc-500">
+              <thead className="bg-surface-raised text-left text-ink-faint">
                 <tr>
                   <th className="px-4 py-2 font-medium">Method</th>
                   <th className="px-4 py-2 font-medium">Path</th>
                   <th className="px-4 py-2 font-medium">Keterangan</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800">
+              <tbody className="divide-y divide-line-soft">
                 {g.endpoints.map(([m, p, d]) => (
                   <tr key={m + p}>
                     <td className="px-4 py-2">
@@ -106,19 +106,19 @@ export default function ApiPage() {
                         className={
                           "rounded px-1.5 py-0.5 text-xs font-mono " +
                           (m === "GET"
-                            ? "bg-blue-500/15 text-blue-400"
+                            ? "bg-info/10 text-info"
                             : m === "POST"
-                            ? "bg-emerald-500/15 text-emerald-400"
+                            ? "text-accent-soft text-accent-strong"
                             : m === "PUT"
-                            ? "bg-amber-500/15 text-amber-400"
-                            : "bg-red-500/15 text-red-400")
+                            ? "bg-warning/10 text-warning"
+                            : "bg-danger/10 text-danger")
                         }
                       >
                         {m}
                       </span>
                     </td>
-                    <td className="px-4 py-2 font-mono text-zinc-300">{p}</td>
-                    <td className="px-4 py-2 text-zinc-500">{d}</td>
+                    <td className="px-4 py-2 font-mono text-ink">{p}</td>
+                    <td className="px-4 py-2 text-ink-faint">{d}</td>
                   </tr>
                 ))}
               </tbody>

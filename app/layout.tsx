@@ -13,7 +13,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="id">
-      <body className="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
+      <body className="min-h-screen bg-surface text-ink antialiased">
         <AuthProvider>
           <div className="flex h-screen overflow-hidden">
             <Sidebar />

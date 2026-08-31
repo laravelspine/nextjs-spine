@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { Button, Card, ErrorNotice, Field, Input } from "@/lib/ui";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -20,13 +21,10 @@ export default function RegisterPage() {
     setLoading(true);
     setError(null);
 
-    const res = await api<{ token: string; user: { name: string; email: string } }>(
-      "/api/v1/auth/register",
-      {
-        method: "POST",
-        body: JSON.stringify({ name, email, password }),
-      }
-    );
+    const res = await api<{ token: string }>("/api/v1/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ name, email, password }),
+    });
 
     if (!res.ok || !res.data.token) {
       setLoading(false);
@@ -42,64 +40,52 @@ export default function RegisterPage() {
   return (
     <div className="mx-auto max-w-sm space-y-6 pt-12">
       <div className="text-center">
-        <h1 className="text-2xl font-bold">Daftar</h1>
-        <p className="mt-1 text-sm text-zinc-500">Buat akun baru di Spine</p>
+        <h1 className="text-2xl font-bold text-ink">Daftar</h1>
+        <p className="mt-1 text-sm text-ink-muted">Buat akun baru di Spine</p>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div>
-          <label className="text-sm font-medium">Nama</label>
-          <input
-            type="text"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="mt-1 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm outline-none focus:border-emerald-500"
-            placeholder="Nama Lengkap"
-          />
-        </div>
-        <div>
-          <label className="text-sm font-medium">Email</label>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm outline-none focus:border-emerald-500"
-            placeholder="nama@email.com"
-          />
-        </div>
-        <div>
-          <label className="text-sm font-medium">Password</label>
-          <input
-            type="password"
-            required
-            minLength={8}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm outline-none focus:border-emerald-500"
-            placeholder="Minimal 8 karakter"
-          />
-        </div>
+      <Card>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <Field label="Nama">
+            <Input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Nama Lengkap"
+            />
+          </Field>
+          <Field label="Email">
+            <Input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="nama@email.com"
+            />
+          </Field>
+          <Field label="Password">
+            <Input
+              type="password"
+              required
+              minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Minimal 8 karakter"
+            />
+          </Field>
 
-        {error && (
-          <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-400">
-            {error}
-          </div>
-        )}
+          {error && <ErrorNotice message={error} />}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-md bg-emerald-500 py-2 font-medium text-zinc-950 hover:bg-emerald-400 disabled:opacity-50"
-        >
-          {loading ? "Memproses..." : "Daftar"}
-        </button>
-      </form>
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "Memproses..." : "Daftar"}
+          </Button>
+        </form>
+      </Card>
 
-      <p className="text-center text-sm text-zinc-500">
+      <p className="text-center text-sm text-ink-muted">
         Sudah punya akun?{" "}
-        <Link href="/login" className="text-emerald-400 hover:underline">
+        <Link href="/login" className="text-accent-strong hover:underline">
           Masuk
         </Link>
       </p>

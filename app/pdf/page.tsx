@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { api, getToken } from "@/lib/api";
+import { api } from "@/lib/api";
+import { Button, Card, ErrorNotice, Field, PageHeader, Textarea } from "@/lib/ui";
 
 export default function PdfPage() {
   const [html, setHtml] = useState("<h1>Invoice Demo</h1><p>Halo dari Spine.</p>");
@@ -38,49 +39,43 @@ export default function PdfPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 pt-8">
-      <header>
-        <h1 className="text-2xl font-bold">PDF dari HTML</h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          POST /api/v1/pdf/from-html — contoh render + download (event PdfCreating/PdfCreated).
-        </p>
-      </header>
+    <div className="mx-auto max-w-2xl space-y-6">
+      <PageHeader
+        title="PDF dari HTML"
+        desc="POST /api/v1/pdf/from-html — contoh render + download (event PdfCreating/PdfCreated)."
+      />
 
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div>
-          <label className="text-sm font-medium">HTML</label>
-          <textarea
-            value={html}
-            onChange={(e) => setHtml(e.target.value)}
-            rows={8}
-            className="mt-1 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 font-mono text-sm outline-none focus:border-emerald-500"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-md bg-emerald-500 py-2 font-medium text-zinc-950 hover:bg-emerald-400 disabled:opacity-50"
-        >
-          {loading ? "Render..." : "Render PDF"}
-        </button>
-      </form>
+      <Card>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <Field label="HTML">
+            <Textarea
+              value={html}
+              onChange={(e) => setHtml(e.target.value)}
+              rows={8}
+              className="font-mono"
+            />
+          </Field>
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "Render..." : "Render PDF"}
+          </Button>
+        </form>
+      </Card>
 
-      {error && (
-        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-400">
-          {error}
-        </div>
-      )}
+      {error && <ErrorNotice message={error} />}
 
       {pdfUrl && (
         <div className="space-y-3">
           <a
             href={pdfUrl}
             download="spine-demo.pdf"
-            className="inline-block rounded-md bg-zinc-800 px-4 py-2 text-sm font-medium hover:bg-zinc-700"
+            className="inline-block rounded-md bg-surface-overlay px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-line"
           >
             Unduh PDF
           </a>
-          <iframe src={pdfUrl} className="h-96 w-full rounded-lg border border-zinc-800" />
+          <iframe
+            src={pdfUrl}
+            className="h-96 w-full rounded-xl border border-line-soft"
+          />
         </div>
       )}
     </div>
