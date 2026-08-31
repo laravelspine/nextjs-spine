@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { api, setToken } from "@/lib/api";
+import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { signIn } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,14 +28,13 @@ export default function RegisterPage() {
       }
     );
 
-    setLoading(false);
-
     if (!res.ok || !res.data.token) {
+      setLoading(false);
       setError(res.error ?? "Registrasi gagal");
       return;
     }
 
-    setToken(res.data.token);
+    await signIn(res.data.token);
     router.push("/");
     router.refresh();
   }

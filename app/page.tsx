@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/lib/auth-context";
 
 const features = [
   {
@@ -38,6 +41,44 @@ const examples = [
 ];
 
 export default function Home() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <p className="text-zinc-500">Memuat...</p>;
+  }
+
+  if (user) {
+    return (
+      <div className="space-y-10">
+        <section>
+          <h1 className="text-3xl font-bold">
+            Halo, <span className="text-emerald-400">{user.name}</span>
+          </h1>
+          <p className="mt-2 text-zinc-400">
+            Login sebagai <code className="text-zinc-300">{user.email}</code> (id {user.id}).
+            Berikut contoh halaman yang mengonsumsi API Spine.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold">Main menu</h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {examples.map((e) => (
+              <Link
+                key={e.href}
+                href={e.href}
+                className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-4 hover:border-emerald-500/40 hover:bg-zinc-900 transition-colors"
+              >
+                <div className="font-medium">{e.label}</div>
+                <div className="mt-1 text-xs text-zinc-500">{e.desc}</div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-12">
       <section className="pt-8 pb-4">
