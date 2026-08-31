@@ -30,16 +30,6 @@ const features = [
   },
 ];
 
-const examples = [
-  { href: "/settings", label: "Settings", desc: "GET/PUT /api/v1/settings/{key}" },
-  { href: "/meta", label: "Meta", desc: "CRUD /api/v1/meta/{type}/{id}/{key}" },
-  { href: "/tags", label: "Tags", desc: "CRUD /api/v1/tags" },
-  { href: "/qr-code", label: "QR Code", desc: "POST /api/v1/qr-code/generate" },
-  { href: "/number-to-word", label: "Number to Word", desc: "POST /api/v1/number-to-word/convert" },
-  { href: "/pdf", label: "PDF", desc: "POST /api/v1/pdf/from-html" },
-  { href: "/activity-logs", label: "Activity Logs", desc: "GET /api/v1/activity-logs" },
-];
-
 export default function Home() {
   const { user, loading } = useAuth();
 
@@ -49,31 +39,16 @@ export default function Home() {
 
   if (user) {
     return (
-      <div className="space-y-10">
+      <div className="space-y-8">
         <section>
           <h1 className="text-3xl font-bold">
             Halo, <span className="text-emerald-400">{user.name}</span>
           </h1>
           <p className="mt-2 text-zinc-400">
             Login sebagai <code className="text-zinc-300">{user.email}</code> (id {user.id}).
-            Berikut contoh halaman yang mengonsumsi API Spine.
+            Pilih menu di sidebar kiri untuk mencoba halaman contoh yang
+            mengonsumsi API Spine.
           </p>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-semibold">Main menu</h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {examples.map((e) => (
-              <Link
-                key={e.href}
-                href={e.href}
-                className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-4 hover:border-emerald-500/40 hover:bg-zinc-900 transition-colors"
-              >
-                <div className="font-medium">{e.label}</div>
-                <div className="mt-1 text-xs text-zinc-500">{e.desc}</div>
-              </Link>
-            ))}
-          </div>
         </section>
       </div>
     );
@@ -109,22 +84,6 @@ export default function Home() {
             </Link>
           </div>
         ))}
-      </section>
-
-      <section>
-        <h2 className="text-xl font-semibold">Main menu — contoh halaman</h2>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {examples.map((e) => (
-            <Link
-              key={e.href}
-              href={e.href}
-              className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-4 hover:border-emerald-500/40 hover:bg-zinc-900 transition-colors"
-            >
-              <div className="font-medium">{e.label}</div>
-              <div className="mt-1 text-xs text-zinc-500">{e.desc}</div>
-            </Link>
-          ))}
-        </div>
       </section>
     </div>
   );

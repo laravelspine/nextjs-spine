@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { AuthProvider } from "@/lib/auth-context";
-import Nav from "./components/Nav";
+import Sidebar from "./components/Sidebar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,18 +15,10 @@ export default function RootLayout({
     <html lang="id">
       <body className="min-h-screen bg-zinc-950 text-zinc-100 antialiased">
         <AuthProvider>
-          <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-10">
-            <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between">
-              <Link href="/" className="font-bold text-lg tracking-tight">
-                Spine<span className="text-emerald-400">.</span>
-              </Link>
-              <Nav />
-            </div>
-          </header>
-          <main className="mx-auto max-w-5xl px-4 py-10">{children}</main>
-          <footer className="border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">
-            Spine — example app (Next.js) consuming spine/laravel-spine API
-          </footer>
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar />
+            <main className="flex-1 overflow-y-auto px-6 py-8">{children}</main>
+          </div>
         </AuthProvider>
       </body>
     </html>
