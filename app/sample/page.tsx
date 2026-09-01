@@ -71,6 +71,8 @@ export default function SamplePage() {
   const [price, setPrice] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [editing, setEditing] = useState<SampleItem | null>(null); // record yang di-Edit
+  const [smallView, setSmallView] = useState(true); // toggle small view ON/OFF
   const { detail_tabs } = useModuleExtensions();
   const tabs = detail_tabs["sample"] ?? [];
 
@@ -83,52 +85,81 @@ export default function SamplePage() {
   const load = useCallback(() => {
     api<{ data: SampleItem[] }>("/api/v1/sample").then((res) => {
       if (res.ok) {
-        const d = res.data?.data ?? [];
-        setItems(d);
-        if (d.length > 0 && selectedId === null) {
-          setSelectedId(d[0].id);
-        }
+        setItems(res.data?.data ?? []);
       }
     });
-  }, [selectedId]);
+  }, []);
 
   useEffect(() => {
     load();
   }, [load]);
 
-  async function onCreate() {
+  // Pilih item: update state + URL hash (#id) — padanan do_hash_helper legacy,
+  // hash HANYA saat klik baris, bukan saat load halaman.
+  function selectItem(id: number | string) {
+    const n = Number(id);
+    setSelectedId(n);
+    window.location.hash = String(n);
+  }
+
+  async function onSave() {
     if (!name.trim()) return;
     setSaving(true);
     setError(null);
     try {
-      const res = await api("/api/v1/sample", {
-        method: "POST",
-        body: JSON.stringify({
-          name: name.trim(),
-          description: description.trim() || null,
-          quantity: quantity === "" ? 0 : Number(quantity),
-          price: price === "" ? 0 : Number(price),
-        }),
+      const payload = {
+        name: name.trim(),
+        description: description.trim() || null,
+        quantity: quantity === "" ? 0 : Number(quantity),
+        price: price === "" ? 0 : Number(price),
+      };
+      const url = editing
+        ? `/api/v1/sample/${editing.id}`
+        : "/api/v1/sample";
+      const res = await api(url, {
+        method: editing ? "PUT" : "POST",
+        body: JSON.stringify(payload),
       });
       if (!res.ok) {
-        setError(res.error ?? "Gagal membuat");
+        setError(res.error ?? "Gagal menyimpan");
         return;
       }
       setName("");
       setDescription("");
       setQuantity("");
       setPrice("");
+      const savedId = (res.data as SampleItem).id;
       setOpen(false);
-      const created = (res.data as SampleItem).id;
+      setEditing(null);
       await load();
-      // Setelah create: pilih item baru → panel kanan muncul (padanan
-      // load_small_table_item auto-toggle setelah create).
-      setSelectedId(created);
+      // Setelah create/edit: pilih record → panel kanan muncul.
+      setSelectedId(savedId);
+      window.location.hash = String(savedId);
     } catch {
-      setError("Gagal membuat");
+      setError("Gagal menyimpan");
     } finally {
       setSaving(false);
     }
+  }
+
+  // Edit record aktif (padanan tombol Edit quotations) — isi form dari record.
+  function openEdit(item: SampleItem) {
+    setName(item.name);
+    setDescription(item.description ?? "");
+    setQuantity(item.quantity != null ? String(item.quantity) : "");
+    setPrice(item.price != null ? String(item.price) : "");
+    setError(null);
+    setEditing(item);
+    setOpen(true);
+  }
+
+  // PDF record aktif — buka endpoint pdf/from-html core dengan data item.
+  function onPdf(item: SampleItem) {
+    const html = encodeURIComponent(
+      `<h1>Sample #${item.id} — ${item.name}</h1><p>${item.description ?? ""}</p>` +
+        `<p>Qty: ${item.quantity ?? 0} | Harga: ${item.price ?? 0}</p>`
+    );
+    window.open(`/api/v1/pdf/from-html?html=${html}`, "_blank");
   }
 
   return (
@@ -144,13 +175,18 @@ export default function SamplePage() {
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            setOpen(false);
+            setEditing(null);
+          }}
         >
           <div
             className="w-full max-w-md rounded-xl border border-line-soft bg-surface-raised p-5 shadow-card"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="mb-4 text-sm font-semibold text-ink">Create Sample</h2>
+            <h2 className="mb-4 text-sm font-semibold text-ink">
+              {editing ? `Edit Sample #${editing.id}` : "Create Sample"}
+            </h2>
             <div className="space-y-3">
               <Field label="Nama">
                 <Input
@@ -193,10 +229,16 @@ export default function SamplePage() {
               </div>
             )}
             <div className="mt-4 flex justify-end gap-2">
-              <Button variant="secondary" onClick={() => setOpen(false)}>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setOpen(false);
+                  setEditing(null);
+                }}
+              >
                 Batal
               </Button>
-              <Button onClick={onCreate} disabled={saving || !name.trim()}>
+              <Button onClick={onSave} disabled={saving || !name.trim()}>
                 {saving ? "Menyimpan..." : "Simpan"}
               </Button>
             </div>
@@ -209,8 +251,29 @@ export default function SamplePage() {
         tabs={tabs}
         columns={columns}
         selectedId={selectedId}
-        onSelectId={(id) => setSelectedId(Number(id))}
+        onSelectId={(id) => {
+          selectItem(id);
+          setSmallView(true); // klik baris → auto ON (padanan load_small_table_item auto-toggle)
+        }}
         getItemId={(it) => it.id}
+        showDetail={smallView}
+        toolbar={(item) => (
+          <>
+            <Button variant="secondary" onClick={() => openEdit(item)}>
+              Edit
+            </Button>
+            <Button variant="secondary" onClick={() => onPdf(item)}>
+              PDF
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => setSmallView((v) => !v)}
+              title="Toggle small view"
+            >
+              {smallView ? "◀" : "▶"}
+            </Button>
+          </>
+        )}
       />
     </div>
   );

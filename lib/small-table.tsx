@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TabContent, type DetailTab } from "@/lib/master-detail";
 import { cx } from "@/lib/ui";
 
@@ -46,6 +46,10 @@ export interface SmallTableProps<T> {
   getItemId: (item: T) => number | string;
   getTabUrl?: (item: T, tab: DetailTab) => string;
   getItemTitle?: (item: T) => string;
+  /** Toolbar di header panel detail (padanan btn-group quotations: Edit/PDF/Toggle). */
+  toolbar?: (item: T) => React.ReactNode;
+  /** Kontrol toggle small view (padanan toggle_small_view): false = tabel penuh tanpa panel. */
+  showDetail?: boolean;
   emptyText?: string;
   tabEmptyText?: string;
 }
@@ -59,20 +63,15 @@ export function SmallTable<T>({
   getItemId,
   getTabUrl = (item, tab) => tab.api.replace("{id}", String(getItemId(item))),
   getItemTitle = (item) => String((item as { name?: unknown }).name ?? getItemId(item)),
+  toolbar,
+  showDetail = true,
   emptyText = "Tidak ada item.",
   tabEmptyText = "Tidak ada data.",
 }: SmallTableProps<T>) {
   const sortedTabs = [...tabs].sort((a, b) => (a.position ?? 999) - (b.position ?? 999));
   const [activeTab, setActiveTab] = useState<string>(sortedTabs[0]?.slug ?? "");
   const selected = items.find((it) => getItemId(it) === selectedId) ?? null;
-  const smallTable = selected !== null;
-
-  // Set URL hash #id saat pilihan berubah (padanan do_hash_helper).
-  useEffect(() => {
-    if (selectedId !== null) {
-      window.location.hash = String(selectedId);
-    }
-  }, [selectedId]);
+  const smallTable = selected !== null && showDetail;
 
   const primaryCols = columns.filter((c) => c.primary);
   // Mode kecil: hanya kolom primary (padanan hidden_columns legacy).
@@ -142,14 +141,19 @@ export function SmallTable<T>({
         </div>
       </div>
 
-      {/* Kolom kanan: panel detail */}
-      {selected && (
+      {/* Kolom kanan: panel detail — hanya saat showDetail ON */}
+      {selected && showDetail && (
         <div className="small-table-detail min-w-0 flex-1 lg:w-7/12">
           <div className="overflow-hidden rounded-xl border border-line-soft bg-surface-raised">
             <div className="small-table-detail-header flex items-center justify-between border-b border-line-soft px-5 py-4">
               <h2 className="text-sm font-semibold text-ink">
                 #{String(getItemId(selected))} {getItemTitle(selected)}
               </h2>
+              {toolbar && (
+                <div className="small-table-toolbar flex items-center gap-2">
+                  {toolbar(selected)}
+                </div>
+              )}
             </div>
 
             {sortedTabs.length > 0 && (
