@@ -22,55 +22,20 @@ interface SampleItem {
 
 const STATUSES = ["pending", "in_progress", "done"] as const;
 
-const columns: SmallTableColumn<SampleTask>[] = [
-  {
-    key: "id",
-    label: "ID",
-    primary: true,
-    render: (it) => <span className="text-ink-faint">#{it.id}</span>,
-  },
-  {
-    key: "title",
-    label: "Title",
-    primary: true,
-    render: (it) => <span className="font-medium text-ink">{it.title}</span>,
-  },
-  {
-    key: "sample_item_id",
-    label: "Parent",
-    render: (it) => (
-      <span className="text-ink-muted">#{it.sample_item_id}</span>
-    ),
-  },
-  {
-    key: "status",
-    label: "Status",
-    primary: true,
-    render: (it) => (
-      <span
-        className={
-          "rounded-full px-2 py-0.5 text-xs font-medium " +
-          (it.status === "done"
-            ? "bg-emerald-100 text-emerald-700"
-            : it.status === "in_progress"
-              ? "bg-amber-100 text-amber-700"
-              : "bg-slate-100 text-slate-600")
-        }
-      >
-        {it.status}
-      </span>
-    ),
-  },
-  {
-    key: "created_at",
-    label: "Dibuat",
-    render: (it) => (
-      <span className="text-ink-muted">
-        {it.created_at ? new Date(it.created_at).toLocaleDateString() : "—"}
-      </span>
-    ),
-  },
-];
+const statusBadge = (status: string) => (
+  <span
+    className={
+      "rounded-full px-2 py-0.5 text-xs font-medium " +
+      (status === "done"
+        ? "bg-emerald-100 text-emerald-700"
+        : status === "in_progress"
+          ? "bg-amber-100 text-amber-700"
+          : "bg-slate-100 text-slate-600")
+    }
+  >
+    {status}
+  </span>
+);
 
 export default function SampleTasksPage() {
   const [items, setItems] = useState<SampleTask[]>([]);
@@ -87,6 +52,46 @@ export default function SampleTasksPage() {
   const [saving, setSaving] = useState(false);
   const { detail_tabs } = useModuleExtensions();
   const tabs = detail_tabs["sampletasks"] ?? [];
+
+  const columns: SmallTableColumn<SampleTask>[] = [
+    {
+      key: "id",
+      label: "ID",
+      primary: true,
+      render: (it) => <span className="text-ink-faint">#{it.id}</span>,
+    },
+    {
+      key: "status",
+      label: "Status",
+      primary: true,
+      render: (it) => statusBadge(it.status),
+    },
+    {
+      key: "title",
+      label: "Title",
+      primary: true,
+      render: (it) => <span className="font-medium text-ink">{it.title}</span>,
+    },
+    {
+      key: "sample_item_id",
+      label: "Parent",
+      render: (it) => (
+        <span className="text-ink-muted">
+          {sampleItems.find((s) => s.id === it.sample_item_id)?.name ??
+            `#${it.sample_item_id}`}
+        </span>
+      ),
+    },
+    {
+      key: "created_at",
+      label: "Dibuat",
+      render: (it) => (
+        <span className="text-ink-muted">
+          {it.created_at ? new Date(it.created_at).toLocaleDateString() : "—"}
+        </span>
+      ),
+    },
+  ];
 
   // Hash #id (padanan do_hash_helper): pilih record dari URL saat load.
   useEffect(() => {
@@ -267,6 +272,22 @@ export default function SampleTasksPage() {
         getItemId={(it) => it.id}
         showDetail={smallView}
         refreshKey={refreshKey}
+        tabHideKeys={["ulid", "title"]}
+        tabCustomValue={{
+          sample_item_id: (v, row) => (
+            <span className="text-ink">
+              {sampleItems.find((s) => s.id === Number(v))?.name ??
+                `#${String(v)}`}
+            </span>
+          ),
+        }}
+        renderHeader={(it) => (
+          <span className="flex items-center gap-2">
+            {statusBadge(it.status)}
+            <span>#{it.id}</span>
+            <span className="text-ink">{it.title}</span>
+          </span>
+        )}
         toolbar={(item) => (
           <>
             <Button variant="secondary" onClick={() => openEdit(item)}>

@@ -152,11 +152,17 @@ export function TabContent({
   url,
   emptyText,
   refreshKey = 0,
+  hideKeys = [],
+  customValue,
 }: {
   url: string;
   emptyText: string;
   /** Naikkan untuk paksa refetch meski url sama (setelah edit/submit). */
   refreshKey?: number;
+  /** Field yang disembunyikan (mis. ulid — sistem-only, title — sudah di header). */
+  hideKeys?: string[];
+  /** Render custom per field (mis. sample_item_id → title parent). */
+  customValue?: Record<string, (value: unknown, row: Record<string, unknown>) => React.ReactNode>;
 }) {
   const [data, setData] = useState<unknown>(null);
   const [error, setError] = useState<string | null>(null);
@@ -181,24 +187,25 @@ export function TabContent({
   if (rows.length === 0) return <p className="text-sm text-ink-muted">{emptyText}</p>;
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <tbody className="divide-y divide-line-soft">
-          {rows.map((r, i) => {
-            const obj = r as Record<string, unknown>;
-            return (
-              <tr key={i}>
-                {Object.entries(obj).map(([k, v]) => (
-                  <td key={k} className="px-3 py-2 align-top">
-                    <span className="block text-xs text-ink-faint">{k}</span>
-                    <span className="text-ink">{v === null ? "—" : String(v)}</span>
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <div className="space-y-4">
+      {rows.map((r, i) => {
+        const obj = r as Record<string, unknown>;
+        const fields = Object.entries(obj).filter(([k]) => !hideKeys.includes(k));
+        return (
+          <dl key={i} className="divide-y divide-line-soft">
+            {fields.map(([k, v]) => (
+              <div key={k} className="flex gap-4 py-2">
+                <dt className="w-36 shrink-0 text-xs uppercase tracking-wider text-ink-faint">
+                  {k.replace(/_/g, " ")}
+                </dt>
+                <dd className="text-sm text-ink">
+                  {customValue?.[k] ? customValue[k](v, obj) : v === null || v === "" ? "—" : String(v)}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        );
+      })}
     </div>
   );
 }

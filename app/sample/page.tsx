@@ -12,6 +12,7 @@ interface SampleItem {
   description?: string | null;
   quantity?: number;
   price?: string | number;
+  status?: string;
   created_at?: string;
 }
 
@@ -261,6 +262,16 @@ export default function SamplePage() {
         getItemId={(it) => it.id}
         showDetail={smallView}
         refreshKey={refreshKey}
+        tabHideKeys={["ulid", "name"]}
+        renderHeader={(it) => (
+          <span className="flex items-center gap-2">
+            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+              {it.status}
+            </span>
+            <span>#{it.id}</span>
+            <span className="text-ink">{it.name}</span>
+          </span>
+        )}
         toolbar={(item) => (
           <>
             <Button variant="secondary" onClick={() => openEdit(item)}>

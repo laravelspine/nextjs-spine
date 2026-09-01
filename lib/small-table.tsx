@@ -52,6 +52,12 @@ export interface SmallTableProps<T> {
   showDetail?: boolean;
   /** Naikkan setelah edit/submit agar konten tab di-refetch (data baru tampil). */
   refreshKey?: number;
+  /** Field yang disembunyikan di konten tab (mis. ulid — sistem-only, title — sudah di header). */
+  tabHideKeys?: string[];
+  /** Render custom per field di konten tab (mis. sample_item_id → title parent). */
+  tabCustomValue?: Record<string, (value: unknown, row: Record<string, unknown>) => React.ReactNode>;
+  /** Header panel detail kustom (default "#id title") — mis. STATUS | ID | TITLE. */
+  renderHeader?: (item: T) => React.ReactNode;
   emptyText?: string;
   tabEmptyText?: string;
 }
@@ -68,6 +74,9 @@ export function SmallTable<T>({
   toolbar,
   showDetail = true,
   refreshKey = 0,
+  tabHideKeys = [],
+  tabCustomValue,
+  renderHeader,
   emptyText = "Tidak ada item.",
   tabEmptyText = "Tidak ada data.",
 }: SmallTableProps<T>) {
@@ -151,7 +160,13 @@ export function SmallTable<T>({
           <div className="overflow-hidden rounded-xl border border-line-soft bg-surface-raised">
             <div className="small-table-detail-header flex items-center justify-between border-b border-line-soft px-5 py-4">
               <h2 className="text-sm font-semibold text-ink">
-                #{String(getItemId(selected))} {getItemTitle(selected)}
+                {renderHeader ? (
+                  renderHeader(selected)
+                ) : (
+                  <>
+                    #{String(getItemId(selected))} {getItemTitle(selected)}
+                  </>
+                )}
               </h2>
               {toolbar && (
                 <div className="small-table-toolbar flex items-center gap-2">
@@ -190,6 +205,8 @@ export function SmallTable<T>({
                   url={getTabUrl(selected, tab)}
                   emptyText={tabEmptyText}
                   refreshKey={refreshKey}
+                  hideKeys={tabHideKeys}
+                  customValue={tabCustomValue}
                 />
               ) : (
                 <p className="text-sm text-ink-muted">{tabEmptyText}</p>
