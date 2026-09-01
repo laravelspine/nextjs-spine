@@ -166,6 +166,21 @@ export default function SampleTasksPage() {
     setOpen(true);
   }
 
+  // Mark as {STATUS}: PUT status -> update state lokal (badge berubah via ajax,
+  // tanpa reload halaman). Padanan aksi status cepat di legacy.
+  async function markStatus(item: SampleTask, newStatus: string) {
+    if (item.status === newStatus) return;
+    const res = await api(`/api/v1/sample-tasks/${item.id}`, {
+      method: "PUT",
+      body: JSON.stringify({ status: newStatus }),
+    });
+    if (!res.ok) return;
+    setItems((prev) =>
+      prev.map((t) => (t.id === item.id ? { ...t, status: newStatus } : t))
+    );
+    setRefreshKey((k) => k + 1); // tab activity ikut refetch
+  }
+
   function onPdf(item: SampleTask) {
     const html = encodeURIComponent(
       `<h1>Sample Task #${item.id} — ${item.title}</h1>` +
@@ -290,6 +305,32 @@ export default function SampleTasksPage() {
         )}
         toolbar={(item) => (
           <>
+            <div className="relative" data-markas>
+              {/* Menu "Mark as {STATUS}" — 3 tombol, klik -> PUT -> badge via ajax */}
+              <details className="group relative">
+                <summary className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-line-soft bg-surface px-3 py-1.5 text-sm text-ink transition-colors hover:bg-surface-overlay">
+                  Mark as ▾
+                </summary>
+                <div className="absolute right-0 z-20 mt-1 w-40 overflow-hidden rounded-lg border border-line-soft bg-surface-raised py-1 shadow-card">
+                  {STATUSES.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => markStatus(item, s)}
+                      disabled={item.status === s}
+                      className={
+                        "block w-full px-3 py-1.5 text-left text-sm " +
+                        (item.status === s
+                          ? "cursor-default bg-accent-soft text-accent-strong"
+                          : "text-ink hover:bg-surface-overlay")
+                      }
+                    >
+                      Mark as {s.replace("_", " ")}
+                    </button>
+                  ))}
+                </div>
+              </details>
+            </div>
             <Button variant="secondary" onClick={() => openEdit(item)}>
               Edit
             </Button>
