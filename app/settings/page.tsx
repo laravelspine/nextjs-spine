@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Button, Card, ErrorNotice, Field, Input, PageHeader } from "@/lib/ui";
+import { Button, Card, ErrorNotice, Field, Input, PageHeader, Textarea } from "@/lib/ui";
 
 /** Field aksi (tombol) — memanggil endpoint dari kontrak action. */
 function ActionField({
@@ -233,6 +233,12 @@ export default function SettingsPage() {
                           setSaved(ok);
                           if (ok) setTimeout(() => setSaved(false), 3000);
                         }}
+                      />
+                    ) : f.type === "textarea" ? (
+                      <Textarea
+                        rows={6}
+                        value={values[f.key] ?? ""}
+                        onChange={(e) => setValues((v) => ({ ...v, [f.key]: e.target.value }))}
                       />
                     ) : (
                       <Input
