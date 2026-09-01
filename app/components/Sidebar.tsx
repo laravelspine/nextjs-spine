@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useModuleExtensions } from "@/lib/module-extensions";
 import { useAuth } from "@/lib/auth-context";
 import { cx } from "@/lib/ui";
 
@@ -50,6 +51,7 @@ function GroupTitle({ children }: { children: React.ReactNode }) {
 
 export default function Sidebar() {
   const { user, loading } = useAuth();
+  const { menu: moduleMenu } = useModuleExtensions();
 
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r border-line-soft bg-surface-raised">
@@ -72,6 +74,15 @@ export default function Sidebar() {
             <GroupTitle>Contoh halaman</GroupTitle>
             {examples.map((i) => (
               <Item key={i.href} {...i} />
+            ))}
+          </div>
+        )}
+
+        {moduleMenu.length > 0 && (
+          <div className="space-y-1">
+            <GroupTitle>Modul</GroupTitle>
+            {moduleMenu.map((i) => (
+              <Item key={i.slug} href={i.href} label={i.label} />
             ))}
           </div>
         )}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { Badge } from "@/lib/ui";
+import { ModuleWidgets } from "./components/ModuleWidgets";
 import { StatCard, useApiCount } from "@/app/components/StatCard";
 
 interface ActivityLog {
@@ -128,21 +129,25 @@ export default function Home() {
             <ActivityFeed />
           </div>
 
-          {/* Widget area kanan: quick links */}
-          <div className="lg:col-span-2 rounded-xl border border-line-soft bg-surface-raised p-5">
-            <h2 className="mb-4 text-sm font-semibold text-ink">Contoh Halaman</h2>
-            <div className="grid grid-cols-2 gap-3">
-              {quickLinks.map((l) => (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  className="rounded-lg border border-line-soft bg-surface p-3 transition-colors hover:border-accent/40"
-                >
-                  <div className="text-lg">{l.icon}</div>
-                  <div className="mt-1 text-sm font-medium text-ink">{l.label}</div>
-                </Link>
-              ))}
+          {/* Widget area kanan: quick links + widget modul */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="rounded-xl border border-line-soft bg-surface-raised p-5">
+              <h2 className="mb-4 text-sm font-semibold text-ink">Contoh Halaman</h2>
+              <div className="grid grid-cols-2 gap-3">
+                {quickLinks.map((l) => (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    className="rounded-lg border border-line-soft bg-surface p-3 transition-colors hover:border-accent/40"
+                  >
+                    <div className="text-lg">{l.icon}</div>
+                    <div className="mt-1 text-sm font-medium text-ink">{l.label}</div>
+                  </Link>
+                ))}
+              </div>
             </div>
+
+            <ModuleWidgets />
           </div>
         </section>
       </div>
