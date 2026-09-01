@@ -58,6 +58,15 @@ export interface SmallTableProps<T> {
   tabCustomValue?: Record<string, (value: unknown, row: Record<string, unknown>) => React.ReactNode>;
   /** Header panel detail kustom (default "#id title") — mis. STATUS | ID | TITLE. */
   renderHeader?: (item: T) => React.ReactNode;
+  /** Kolom yang bisa di-search (key dari columns). Kosong = tanpa search box. */
+  searchableKeys?: string[];
+  /** Teks searchable per item (lebih fleksibel: gabungan title + parent name). */
+  getSearchText?: (item: T) => string;
+  /** Teks pencarian dari luar (opsional, controlled). */
+  searchValue?: string;
+  onSearchChange?: (v: string) => void;
+  /** Jumlah baris per halaman (setting tables_pagination_limit, default 10). */
+  perPage?: number;
   emptyText?: string;
   tabEmptyText?: string;
 }
@@ -77,14 +86,43 @@ export function SmallTable<T>({
   tabHideKeys = [],
   tabCustomValue,
   renderHeader,
+  searchableKeys = [],
+  getSearchText,
+  searchValue,
+  onSearchChange,
+  perPage = 10,
   emptyText = "Tidak ada item.",
   tabEmptyText = "Tidak ada data.",
 }: SmallTableProps<T>) {
   const sortedTabs = [...tabs].sort((a, b) => (a.position ?? 999) - (b.position ?? 999));
   const [activeTab, setActiveTab] = useState<string>(sortedTabs[0]?.slug ?? "");
   const tab = sortedTabs.find((t) => t.slug === activeTab) ?? sortedTabs[0] ?? null;
-  const selected = items.find((it) => getItemId(it) === selectedId) ?? null;
+
+  // Search (client-side) — filter items via getSearchText (atau searchableKeys).
+  const [internalSearch, setInternalSearch] = useState("");
+  const q = (searchValue ?? internalSearch).trim().toLowerCase();
+  const setQ = onSearchChange ?? setInternalSearch;
+  const filteredItems = q
+    ? items.filter((it) => {
+        if (getSearchText) {
+          return getSearchText(it).toLowerCase().includes(q);
+        }
+        return searchableKeys.some((key) =>
+          String((it as Record<string, unknown>)[key] ?? "")
+            .toLowerCase()
+            .includes(q)
+        );
+      })
+    : items;
+
+  const selected = filteredItems.find((it) => getItemId(it) === selectedId) ?? null;
   const smallTable = selected !== null && showDetail;
+
+  // Pagination (setting tables_pagination_limit) — reset halaman saat search.
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(filteredItems.length / perPage));
+  const currentPage = Math.min(page, totalPages);
+  const pageItems = filteredItems.slice((currentPage - 1) * perPage, currentPage * perPage);
 
   const primaryCols = columns.filter((c) => c.primary);
   // Mode kecil: hanya kolom primary (padanan hidden_columns legacy).
@@ -94,6 +132,17 @@ export function SmallTable<T>({
     <div className="small-table flex flex-col gap-4 lg:flex-row">
       {/* Kolom kiri: DataTable */}
       <div className={cx("small-table-list min-w-0", smallTable ? "lg:w-5/12" : "lg:w-full")}>
+        {(getSearchText || searchableKeys.length > 0) && (
+          <div className="small-table-search mb-3">
+            <input
+              type="search"
+              value={searchValue ?? internalSearch}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Cari..."
+              className="w-full rounded-lg border border-line-soft bg-surface-raised px-3 py-2 text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
+        )}
         <div className="overflow-hidden rounded-xl border border-line-soft bg-surface-raised">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -107,7 +156,7 @@ export function SmallTable<T>({
                 </tr>
               </thead>
               <tbody className="divide-y divide-line-soft">
-                {items.length === 0 ? (
+                {pageItems.length === 0 ? (
                   <tr>
                     <td
                       colSpan={visibleCols.length}
@@ -117,7 +166,7 @@ export function SmallTable<T>({
                     </td>
                   </tr>
                 ) : (
-                  items.map((it) => {
+                  pageItems.map((it) => {
                     const id = getItemId(it);
                     const active = id === selectedId;
                     return (
@@ -151,6 +200,38 @@ export function SmallTable<T>({
               </tbody>
             </table>
           </div>
+          {/* Footer pagination — setting tables_pagination_limit */}
+          {filteredItems.length > perPage && (
+            <div className="small-table-pagination flex items-center justify-between border-t border-line-soft px-3 py-2 text-xs text-ink-muted">
+              <span>
+                {filteredItems.length === 0
+                  ? "0"
+                  : `${(currentPage - 1) * perPage + 1}-${Math.min(
+                      currentPage * perPage,
+                      filteredItems.length
+                    )}`}{" "}
+                dari {filteredItems.length}
+              </span>
+              <div className="flex gap-1">
+                <button
+                  type="button"
+                  onClick={() => setPage(currentPage - 1)}
+                  disabled={currentPage <= 1}
+                  className="rounded px-2 py-1 hover:bg-surface-overlay disabled:opacity-40"
+                >
+                  ‹ Prev
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPage(currentPage + 1)}
+                  disabled={currentPage >= totalPages}
+                  className="rounded px-2 py-1 hover:bg-surface-overlay disabled:opacity-40"
+                >
+                  Next ›
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

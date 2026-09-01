@@ -5,6 +5,7 @@ import { api } from "@/lib/api";
 import { Button, Card, ErrorNotice, Field, Input, PageHeader } from "@/lib/ui";
 import { SmallTable, type SmallTableColumn } from "@/lib/small-table";
 import { useModuleExtensions } from "@/lib/module-extensions";
+import { usePaginationLimit } from "@/lib/use-pagination-limit";
 
 interface SampleTask {
   id: number;
@@ -52,6 +53,7 @@ export default function SampleTasksPage() {
   const [saving, setSaving] = useState(false);
   const { detail_tabs } = useModuleExtensions();
   const tabs = detail_tabs["sampletasks"] ?? [];
+  const perPage = usePaginationLimit(); // setting tables_pagination_limit
 
   const columns: SmallTableColumn<SampleTask>[] = [
     {
@@ -287,6 +289,12 @@ export default function SampleTasksPage() {
         getItemId={(it) => it.id}
         showDetail={smallView}
         refreshKey={refreshKey}
+        perPage={perPage}
+        getSearchText={(it) =>
+          `${it.title} ${
+            sampleItems.find((s) => s.id === it.sample_item_id)?.name ?? ""
+          }`
+        }
         tabHideKeys={["ulid", "title"]}
         tabCustomValue={{
           sample_item_id: (v, row) => (

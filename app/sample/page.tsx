@@ -5,6 +5,7 @@ import { api } from "@/lib/api";
 import { Button, Card, ErrorNotice, Field, Input, PageHeader } from "@/lib/ui";
 import { SmallTable, type SmallTableColumn } from "@/lib/small-table";
 import { useModuleExtensions } from "@/lib/module-extensions";
+import { usePaginationLimit } from "@/lib/use-pagination-limit";
 
 interface SampleItem {
   id: number;
@@ -77,6 +78,7 @@ export default function SamplePage() {
   const [refreshKey, setRefreshKey] = useState(0); // paksa refetch konten tab setelah edit
   const { detail_tabs } = useModuleExtensions();
   const tabs = detail_tabs["sample"] ?? [];
+  const perPage = usePaginationLimit(); // setting tables_pagination_limit
 
   // Hash #id (padanan do_hash_helper): pilih record dari URL saat load.
   useEffect(() => {
@@ -262,6 +264,8 @@ export default function SamplePage() {
         getItemId={(it) => it.id}
         showDetail={smallView}
         refreshKey={refreshKey}
+        perPage={perPage}
+        getSearchText={(it) => `${it.name} ${it.description ?? ""}`}
         tabHideKeys={["ulid", "name"]}
         renderHeader={(it) => (
           <span className="flex items-center gap-2">
