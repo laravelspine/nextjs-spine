@@ -10,9 +10,16 @@ export const metadata: Metadata = {
   description: "Landing page dan contoh aplikasi untuk spine/laravel-spine.",
 };
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // ponytail: force-dynamic — tanpa ini Next.js me-prerender layout ke cache
+  // ISR (x-nextjs-stale-time: 300), jadi setelah deploy browser dapat HTML
+  // lama (form lama, hydration #418) sampai cache kedaluwarsa 5 menit.
+  // Biaya: tanpa static generation — sesuai untuk app yang 100% API-driven.
   return (
     <html lang="id" suppressHydrationWarning>
       <body className="min-h-screen bg-surface text-ink antialiased">
