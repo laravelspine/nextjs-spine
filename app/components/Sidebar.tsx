@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { cx } from "@/lib/ui";
 
@@ -49,14 +49,7 @@ function GroupTitle({ children }: { children: React.ReactNode }) {
 }
 
 export default function Sidebar() {
-  const { user, loading, logout } = useAuth();
-  const router = useRouter();
-
-  async function onLogout() {
-    await logout();
-    router.push("/");
-    router.refresh();
-  }
+  const { user, loading } = useAuth();
 
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r border-line-soft bg-surface-raised">
@@ -85,20 +78,7 @@ export default function Sidebar() {
       </nav>
 
       <div className="border-t border-line-soft px-3 py-3">
-        {loading ? null : user ? (
-          <div className="flex items-center justify-between gap-2 px-1">
-            <div className="min-w-0">
-              <div className="truncate text-sm font-medium text-ink">{user.name}</div>
-              <div className="truncate text-xs text-ink-faint">{user.email}</div>
-            </div>
-            <button
-              onClick={onLogout}
-              className="shrink-0 rounded-md border border-line px-2 py-1 text-xs text-ink-muted transition-colors hover:border-danger/50 hover:text-danger"
-            >
-              Keluar
-            </button>
-          </div>
-        ) : (
+        {loading || user ? null : (
           <div className="space-y-2">
             <Link
               href="/login"

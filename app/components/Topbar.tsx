@@ -1,6 +1,9 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { ThemeToggleButton } from "./ThemeToggleButton";
+import UserDropdown from "./UserDropdown";
+import { NotificationButton } from "./NotificationButton";
 
 const titles: Record<string, string> = {
   "/": "Dashboard",
@@ -28,6 +31,11 @@ export default function Topbar() {
         <span className="text-ink-faint">Spine</span>
         <span className="text-ink-faint">/</span>
         <span className="font-medium text-ink">{title}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <ThemeToggleButton />
+        <NotificationButton />
+        <UserDropdown />
       </div>
     </header>
   );

@@ -1,48 +1,69 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 /*
  * Spine design tokens — semantic, satu sumber kebenaran.
- * Ganti warna di sini → seluruh aplikasi ikut. Jangan hardcode
- * warna zinc/emerald di komponen; pakai token di bawah.
+ * Nilai aktual hidup di CSS variables (:root = light, .dark = dark);
+ * @theme inline memetakan ke utility Tailwind (bg-surface, text-ink, dll).
+ * Ganti di sini → seluruh aplikasi ikut. Jangan hardcode warna di komponen.
  */
-@theme {
-  /* surface */
-  --color-surface: #09090b;          /* bg aplikasi (zinc-950) */
-  --color-surface-raised: #18181b;   /* card, sidebar, panel (zinc-900) */
-  --color-surface-overlay: #27272a;  /* input, hover (zinc-800) */
-  --color-line: #3f3f46;             /* border (zinc-700) */
-  --color-line-soft: #27272a;        /* border tipis (zinc-800) */
 
-  /* text */
-  --color-ink: #f4f4f5;              /* teks utama (zinc-100) */
-  --color-ink-muted: #a1a1aa;        /* teks sekunder (zinc-400) */
-  --color-ink-faint: #71717a;        /* teks tersier (zinc-500) */
-
-  /* accent (brand) */
-  --color-accent: #10b981;           /* emerald-500 */
-  --color-accent-strong: #34d399;    /* emerald-400 (hover) */
-  --color-accent-soft: rgba(16, 185, 129, 0.15);
-  --color-accent-ink: #09090b;       /* teks di atas accent */
-
-  /* status */
-  --color-danger: #ef4444;
-  --color-danger-soft: rgba(239, 68, 68, 0.1);
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-info: #3b82f6;
-
-  /* geometry */
-  --radius-field: 0.5rem;
-  --radius-card: 0.75rem;
-  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+:root {
+  --surface: #fafafa;
+  --surface-raised: #ffffff;
+  --surface-overlay: #f4f4f5;
+  --line: #e4e4e7;
+  --line-soft: #ececef;
+  --ink: #18181b;
+  --ink-muted: #52525b;
+  --ink-faint: #a1a1aa;
+  --accent: #059669;
+  --accent-strong: #047857;
+  --accent-soft: #d1fae5;
+  --accent-ink: #022c22;
+  --danger: #dc2626;
+  --danger-soft: #fee2e2;
+  --success: #16a34a;
+  --warning: #d97706;
+  --info: #2563eb;
 }
 
-/* base */
-html {
-  color-scheme: dark;
+.dark {
+  --surface: #09090b;
+  --surface-raised: #18181b;
+  --surface-overlay: #27272a;
+  --line: #27272a;
+  --line-soft: #1f1f23;
+  --ink: #fafafa;
+  --ink-muted: #a1a1aa;
+  --ink-faint: #71717a;
+  --accent: #10b981;
+  --accent-strong: #34d399;
+  --accent-soft: #064e3b;
+  --accent-ink: #ecfdf5;
+  --danger: #ef4444;
+  --danger-soft: #450a0a;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --info: #3b82f6;
 }
 
-body {
-  background: var(--color-surface);
-  color: var(--color-ink);
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
 }
