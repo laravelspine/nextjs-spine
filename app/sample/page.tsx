@@ -3,9 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Button, Card, ErrorNotice, Field, Input, PageHeader } from "@/lib/ui";
-import { TabContent, type DetailTab } from "@/lib/master-detail";
+import { SmallTable, type SmallTableColumn } from "@/lib/small-table";
 import { useModuleExtensions } from "@/lib/module-extensions";
-import { cx } from "@/lib/ui";
 
 interface SampleItem {
   id: number;
@@ -16,13 +15,55 @@ interface SampleItem {
   created_at?: string;
 }
 
-// Kolom yang disembunyikan saat mode kecil (padanan hidden_columns legacy).
-const HIDDEN_COLS = ["description", "price", "created_at"];
+const columns: SmallTableColumn<SampleItem>[] = [
+  {
+    key: "id",
+    label: "ID",
+    primary: true,
+    render: (it) => <span className="text-ink-faint">#{it.id}</span>,
+  },
+  {
+    key: "name",
+    label: "Nama",
+    primary: true,
+    render: (it) => <span className="font-medium text-ink">{it.name}</span>,
+  },
+  {
+    key: "description",
+    label: "Deskripsi",
+    render: (it) => (
+      <span className="max-w-[200px] truncate text-ink-muted">{it.description ?? "—"}</span>
+    ),
+  },
+  {
+    key: "quantity",
+    label: "Qty",
+    primary: true,
+    render: (it) => <span className="text-ink-muted">{it.quantity ?? 0}</span>,
+  },
+  {
+    key: "price",
+    label: "Harga",
+    render: (it) => (
+      <span className="text-ink-muted">
+        {it.price ? Number(it.price).toLocaleString("id-ID") : "0"}
+      </span>
+    ),
+  },
+  {
+    key: "created_at",
+    label: "Dibuat",
+    render: (it) => (
+      <span className="text-ink-muted">
+        {it.created_at ? new Date(it.created_at).toLocaleDateString() : "—"}
+      </span>
+    ),
+  },
+];
 
 export default function SamplePage() {
   const [items, setItems] = useState<SampleItem[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<string>("");
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -31,9 +72,9 @@ export default function SamplePage() {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const { detail_tabs } = useModuleExtensions();
-  const tabs: DetailTab[] = detail_tabs["sample"] ?? [];
+  const tabs = detail_tabs["sample"] ?? [];
 
-  // Hash #id (padanan do_hash_helper legacy): pilih record dari URL.
+  // Hash #id (padanan do_hash_helper): pilih record dari URL saat load.
   useEffect(() => {
     const h = Number(window.location.hash.replace("#", ""));
     if (h) setSelectedId(h);
@@ -44,24 +85,16 @@ export default function SamplePage() {
       if (res.ok) {
         const d = res.data?.data ?? [];
         setItems(d);
-        // Kalau belum ada pilihan, auto-pilih item pertama (padanan
-        // quotation_id dari URL di legacy) + set hash.
-        if (d.length > 0 && !window.location.hash) {
+        if (d.length > 0 && selectedId === null) {
           setSelectedId(d[0].id);
         }
       }
     });
-  }, []);
+  }, [selectedId]);
 
   useEffect(() => {
     load();
   }, [load]);
-
-  // Pilih item: update state + URL hash (#id).
-  function selectItem(id: number) {
-    setSelectedId(id);
-    window.location.hash = String(id);
-  }
 
   async function onCreate() {
     if (!name.trim()) return;
@@ -89,19 +122,14 @@ export default function SamplePage() {
       const created = (res.data as SampleItem).id;
       await load();
       // Setelah create: pilih item baru → panel kanan muncul (padanan
-      // load_small_table_item yang auto-toggle setelah create).
-      selectItem(created);
+      // load_small_table_item auto-toggle setelah create).
+      setSelectedId(created);
     } catch {
       setError("Gagal membuat");
     } finally {
       setSaving(false);
     }
   }
-
-  const sortedTabs = [...tabs].sort((a, b) => (a.position ?? 999) - (b.position ?? 999));
-  const tab = sortedTabs.find((t) => t.slug === activeTab) ?? sortedTabs[0] ?? null;
-  const selected = items.find((it) => it.id === selectedId) ?? null;
-  const smallTable = selected !== null; // mode kecil = ada record terpilih
 
   return (
     <div className="space-y-6">
@@ -176,114 +204,14 @@ export default function SamplePage() {
         </div>
       )}
 
-      {/* Mode kecil (padanan #small-table col-md-5 + col-md-7 small-table-right-col) */}
-      <div className="flex flex-col gap-4 lg:flex-row">
-        <div className={cx("min-w-0", smallTable ? "lg:w-5/12" : "lg:w-full")}>
-          <Card>
-            <h2 className="mb-4 text-sm font-semibold text-ink">
-              Daftar Item ({items.length})
-            </h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-line-soft text-left text-xs uppercase tracking-wider text-ink-faint">
-                    <th className="px-3 py-2">ID</th>
-                    <th className="px-3 py-2">Nama</th>
-                    {!smallTable && <th className="px-3 py-2">Deskripsi</th>}
-                    <th className="px-3 py-2">Qty</th>
-                    {!smallTable && <th className="px-3 py-2">Harga</th>}
-                    {!smallTable && <th className="px-3 py-2">Dibuat</th>}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-line-soft">
-                  {items.length === 0 ? (
-                    <tr>
-                      <td colSpan={6} className="px-3 py-4 text-center text-ink-muted">
-                        Belum ada item.
-                      </td>
-                    </tr>
-                  ) : (
-                    items.map((it) => (
-                      <tr
-                        key={it.id}
-                        onClick={() => selectItem(it.id)}
-                        className={cx(
-                          "cursor-pointer transition-colors",
-                          selectedId === it.id
-                            ? "bg-accent-soft"
-                            : "hover:bg-surface-overlay"
-                        )}
-                      >
-                        <td className="px-3 py-2 text-ink-faint">#{it.id}</td>
-                        <td className="px-3 py-2 font-medium text-ink">{it.name}</td>
-                        {!smallTable && (
-                          <td className="max-w-[200px] truncate px-3 py-2 text-ink-muted">
-                            {it.description ?? "—"}
-                          </td>
-                        )}
-                        <td className="px-3 py-2 text-ink-muted">{it.quantity ?? 0}</td>
-                        {!smallTable && (
-                          <td className="px-3 py-2 text-ink-muted">
-                            {it.price ? Number(it.price).toLocaleString("id-ID") : "0"}
-                          </td>
-                        )}
-                        {!smallTable && (
-                          <td className="px-3 py-2 text-ink-muted">
-                            {it.created_at ? new Date(it.created_at).toLocaleDateString() : "—"}
-                          </td>
-                        )}
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-        </div>
-
-        {selected && (
-          <div className="min-w-0 flex-1 lg:w-7/12">
-            <Card>
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-ink">
-                  #{selected.id} {selected.name}
-                </h2>
-              </div>
-
-              {sortedTabs.length > 0 && (
-                <nav className="mb-4 flex flex-wrap gap-1 border-b border-line-soft pb-2">
-                  {sortedTabs.map((t) => {
-                    const isActive = t.slug === activeTab;
-                    return (
-                      <button
-                        key={t.slug}
-                        type="button"
-                        onClick={() => setActiveTab(t.slug)}
-                        className={cx(
-                          "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors",
-                          isActive
-                            ? "bg-accent-soft font-medium text-accent-strong"
-                            : "text-ink-muted hover:bg-surface-overlay hover:text-ink"
-                        )}
-                      >
-                        {t.icon && <span className="text-xs">{t.icon}</span>}
-                        {t.label}
-                      </button>
-                    );
-                  })}
-                </nav>
-              )}
-
-              {tab ? (
-                <TabContent
-                  url={tab.api.replace("{id}", String(selected.id))}
-                  emptyText="Tidak ada data."
-                />
-              ) : null}
-            </Card>
-          </div>
-        )}
-      </div>
+      <SmallTable
+        items={items}
+        tabs={tabs}
+        columns={columns}
+        selectedId={selectedId}
+        onSelectId={(id) => setSelectedId(Number(id))}
+        getItemId={(it) => it.id}
+      />
     </div>
   );
 }
