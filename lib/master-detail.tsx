@@ -148,7 +148,7 @@ export function MasterDetail({
   );
 }
 
-function TabContent({ url, emptyText }: { url: string; emptyText: string }) {
+export function TabContent({ url, emptyText }: { url: string; emptyText: string }) {
   const [data, setData] = useState<unknown>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);

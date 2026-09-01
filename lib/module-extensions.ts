@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api } from "./api";
+import { api, getToken } from "./api";
 import type { DetailTab } from "./master-detail";
 
 export interface ModuleMenuItem {
@@ -39,8 +39,17 @@ export function useModuleExtensions() {
     detail_tabs: {},
   });
   const [loading, setLoading] = useState(true);
+  const token = getToken();
 
   useEffect(() => {
+    // deps token: re-fetch saat login/logout — kalau mount saat belum login
+    // (menu kosong), fetch ulang begitu token tersedia.
+    if (!token) {
+      setExt({ menu: [], widgets: [], detail_tabs: {} });
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
     api<ModuleExtensions>("/api/v1/modules/extensions")
       .then((res) => {
         if (res.ok) {
@@ -52,7 +61,7 @@ export function useModuleExtensions() {
         }
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [token]);
 
   return { ...ext, loading };
 }
