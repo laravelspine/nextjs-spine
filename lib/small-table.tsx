@@ -50,6 +50,8 @@ export interface SmallTableProps<T> {
   toolbar?: (item: T) => React.ReactNode;
   /** Kontrol toggle small view (padanan toggle_small_view): false = tabel penuh tanpa panel. */
   showDetail?: boolean;
+  /** Naikkan setelah edit/submit agar konten tab di-refetch (data baru tampil). */
+  refreshKey?: number;
   emptyText?: string;
   tabEmptyText?: string;
 }
@@ -65,6 +67,7 @@ export function SmallTable<T>({
   getItemTitle = (item) => String((item as { name?: unknown }).name ?? getItemId(item)),
   toolbar,
   showDetail = true,
+  refreshKey = 0,
   emptyText = "Tidak ada item.",
   tabEmptyText = "Tidak ada data.",
 }: SmallTableProps<T>) {
@@ -185,6 +188,7 @@ export function SmallTable<T>({
                 <TabContent
                   url={getTabUrl(selected, sortedTabs[0])}
                   emptyText={tabEmptyText}
+                  refreshKey={refreshKey}
                 />
               ) : (
                 <p className="text-sm text-ink-muted">{tabEmptyText}</p>

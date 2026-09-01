@@ -73,6 +73,7 @@ export default function SamplePage() {
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState<SampleItem | null>(null); // record yang di-Edit
   const [smallView, setSmallView] = useState(true); // toggle small view ON/OFF
+  const [refreshKey, setRefreshKey] = useState(0); // paksa refetch konten tab setelah edit
   const { detail_tabs } = useModuleExtensions();
   const tabs = detail_tabs["sample"] ?? [];
 
@@ -132,9 +133,11 @@ export default function SamplePage() {
       setOpen(false);
       setEditing(null);
       await load();
-      // Setelah create/edit: pilih record → panel kanan muncul.
+      // Setelah create/edit: pilih record → panel kanan muncul + konten tab
+      // di-refetch (data hasil edit langsung tampil, tanpa klik row ulang).
       setSelectedId(savedId);
       window.location.hash = String(savedId);
+      setRefreshKey((k) => k + 1);
     } catch {
       setError("Gagal menyimpan");
     } finally {
@@ -257,6 +260,7 @@ export default function SamplePage() {
         }}
         getItemId={(it) => it.id}
         showDetail={smallView}
+        refreshKey={refreshKey}
         toolbar={(item) => (
           <>
             <Button variant="secondary" onClick={() => openEdit(item)}>

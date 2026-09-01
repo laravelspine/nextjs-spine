@@ -148,7 +148,16 @@ export function MasterDetail({
   );
 }
 
-export function TabContent({ url, emptyText }: { url: string; emptyText: string }) {
+export function TabContent({
+  url,
+  emptyText,
+  refreshKey = 0,
+}: {
+  url: string;
+  emptyText: string;
+  /** Naikkan untuk paksa refetch meski url sama (setelah edit/submit). */
+  refreshKey?: number;
+}) {
   const [data, setData] = useState<unknown>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -163,7 +172,7 @@ export function TabContent({ url, emptyText }: { url: string; emptyText: string 
       })
       .catch(() => setError("Gagal memuat"))
       .finally(() => setLoading(false));
-  }, [url]);
+  }, [url, refreshKey]);
 
   if (loading) return <p className="text-sm text-ink-muted">Memuat...</p>;
   if (error) return <p className="text-sm text-danger">{error}</p>;
