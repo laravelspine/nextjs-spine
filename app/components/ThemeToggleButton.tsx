@@ -1,9 +1,25 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 
 export function ThemeToggleButton() {
   const { resolvedTheme, setTheme } = useTheme();
+  // next-themes: resolvedTheme beda antara server (undefined) dan client
+  // (sudah di-set class dark) → render null sampai mounted agar hydration
+  // server/client identik. Tanpa ini: React error #418.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return (
+      <button
+        type="button"
+        aria-label="Ganti tema"
+        className="flex h-10 w-10 items-center justify-center rounded-lg border border-line-soft bg-surface-raised text-ink-muted transition-colors hover:text-ink"
+      />
+    );
+  }
 
   return (
     <button
