@@ -73,6 +73,7 @@ export function SmallTable<T>({
 }: SmallTableProps<T>) {
   const sortedTabs = [...tabs].sort((a, b) => (a.position ?? 999) - (b.position ?? 999));
   const [activeTab, setActiveTab] = useState<string>(sortedTabs[0]?.slug ?? "");
+  const tab = sortedTabs.find((t) => t.slug === activeTab) ?? sortedTabs[0] ?? null;
   const selected = items.find((it) => getItemId(it) === selectedId) ?? null;
   const smallTable = selected !== null && showDetail;
 
@@ -184,9 +185,9 @@ export function SmallTable<T>({
             )}
 
             <div className="small-table-detail-body p-5">
-              {sortedTabs.length > 0 ? (
+              {tab ? (
                 <TabContent
-                  url={getTabUrl(selected, sortedTabs[0])}
+                  url={getTabUrl(selected, tab)}
                   emptyText={tabEmptyText}
                   refreshKey={refreshKey}
                 />
