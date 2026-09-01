@@ -4,12 +4,63 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Button, Card, ErrorNotice, Field, Input, PageHeader } from "@/lib/ui";
 
+/** Field aksi (tombol) — memanggil endpoint dari kontrak action. */
+function ActionField({
+  field,
+  values,
+  onResult,
+}: {
+  field: SettingsField;
+  values: Record<string, string>;
+  onResult: (msg: string, ok: boolean) => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const action = field.action;
+  if (!action) return null;
+  const { method, path, from_key, body_key } = action;
+
+  async function run() {
+    setBusy(true);
+    try {
+      const body: Record<string, string> = {};
+      if (from_key && body_key) {
+        body[body_key] = values[from_key] ?? "";
+      }
+      const res = await api(path, {
+        method,
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        onResult(res.error ?? "Gagal", false);
+      } else {
+        onResult("Berhasil", true);
+      }
+    } catch {
+      onResult("Gagal", false);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Button onClick={run} disabled={busy} variant="secondary">
+      {busy ? "Mengirim..." : field.label}
+    </Button>
+  );
+}
+
 interface SettingsField {
   key: string;
   label: string;
   type: string;
   options?: { value: string; label: string }[];
   default?: string;
+  action?: {
+    method: string;
+    path: string;
+    from_key?: string;
+    body_key?: string;
+  };
 }
 
 interface SettingsTab {
@@ -173,9 +224,19 @@ export default function SettingsPage() {
                           </option>
                         ))}
                       </select>
+                    ) : f.type === "action" ? (
+                      <ActionField
+                        field={f}
+                        values={values}
+                        onResult={(msg, ok) => {
+                          setError(ok ? null : msg);
+                          setSaved(ok);
+                          if (ok) setTimeout(() => setSaved(false), 3000);
+                        }}
+                      />
                     ) : (
                       <Input
-                        type={f.type === "number" ? "number" : "text"}
+                        type={f.type === "number" ? "number" : f.type === "password" ? "password" : "text"}
                         value={values[f.key] ?? ""}
                         onChange={(e) => setValues((v) => ({ ...v, [f.key]: e.target.value }))}
                       />
