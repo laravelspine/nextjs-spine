@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Button, Card, ErrorNotice, Field, Input, PageHeader } from "@/lib/ui";
+import { MasterDetail } from "@/lib/master-detail";
+import { useModuleExtensions } from "@/lib/module-extensions";
 
 interface SampleItem {
   id: number;
@@ -14,6 +16,8 @@ export default function SamplePage() {
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const { detail_tabs } = useModuleExtensions();
+  const tabs = detail_tabs["sample"] ?? [];
 
   const load = useCallback(() => {
     api<{ data: SampleItem[] }>("/api/v1/sample").then((res) => {
@@ -51,7 +55,7 @@ export default function SamplePage() {
     <div className="space-y-6">
       <PageHeader
         title="Sample"
-        desc="Halaman dari modul Sample — data via GET/POST /api/v1/sample."
+        desc="Halaman dari modul Sample — list kiri + panel detail bertab (helper MasterDetail)."
       />
 
       {error && <ErrorNotice message={error} />}
@@ -72,21 +76,7 @@ export default function SamplePage() {
         </div>
       </Card>
 
-      <Card>
-        <h2 className="mb-4 text-sm font-semibold text-ink">Daftar Item ({items.length})</h2>
-        {items.length === 0 ? (
-          <p className="text-sm text-ink-muted">Belum ada item. Tambahkan di atas.</p>
-        ) : (
-          <ul className="divide-y divide-line-soft">
-            {items.map((it) => (
-              <li key={it.id} className="flex items-center justify-between py-2 text-sm">
-                <span className="text-ink">{it.name}</span>
-                <span className="text-xs text-ink-faint">#{it.id}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
+      <MasterDetail items={items} tabs={tabs} />
     </div>
   );
 }

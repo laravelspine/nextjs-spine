@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "./api";
+import type { DetailTab } from "./master-detail";
 
 export interface ModuleMenuItem {
   slug: string;
@@ -23,15 +24,20 @@ export interface ModuleWidget {
 export interface ModuleExtensions {
   menu: ModuleMenuItem[];
   widgets: ModuleWidget[];
+  detail_tabs: Record<string, DetailTab[]>;
 }
 
 /**
- * Registry frontend — menu + widget dari SEMUA modul aktif.
+ * Registry frontend — menu + widget + detail_tabs dari SEMUA modul aktif.
  * Padanan get_sidebar_menu_items() + render_dashboard_widgets() legacy:
  * satu request ke /api/v1/modules/extensions, core merender apa adanya.
  */
 export function useModuleExtensions() {
-  const [ext, setExt] = useState<ModuleExtensions>({ menu: [], widgets: [] });
+  const [ext, setExt] = useState<ModuleExtensions>({
+    menu: [],
+    widgets: [],
+    detail_tabs: {},
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,6 +47,7 @@ export function useModuleExtensions() {
           setExt({
             menu: res.data?.menu ?? [],
             widgets: res.data?.widgets ?? [],
+            detail_tabs: res.data?.detail_tabs ?? {},
           });
         }
       })
