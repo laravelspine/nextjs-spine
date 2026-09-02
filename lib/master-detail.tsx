@@ -171,6 +171,7 @@ export function TabContent({
   refreshKey = 0,
   hideKeys = [],
   customValue,
+  inlineData,
 }: {
   url: string;
   emptyText: string;
@@ -180,12 +181,15 @@ export function TabContent({
   hideKeys?: string[];
   /** Render custom per field (mis. sample_item_id → title parent). */
   customValue?: Record<string, (value: unknown, row: Record<string, unknown>) => React.ReactNode>;
+  /** Data langsung tanpa fetch (padanan legacy: record sudah ada di client). */
+  inlineData?: unknown;
 }) {
-  const [data, setData] = useState<unknown>(null);
+  const [data, setData] = useState<unknown>(inlineData ?? null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(inlineData === undefined);
 
   useEffect(() => {
+    if (inlineData !== undefined) return; // render langsung, tanpa ajax
     setLoading(true);
     setError(null);
     api<{ data?: unknown }>(url)
@@ -195,16 +199,18 @@ export function TabContent({
       })
       .catch(() => setError("Gagal memuat"))
       .finally(() => setLoading(false));
-  }, [url, refreshKey]);
+  }, [url, refreshKey, inlineData]);
 
   if (loading) return <p className="text-sm text-ink-muted">Memuat...</p>;
   if (error) return <p className="text-sm text-danger">{error}</p>;
 
-  const rows = Array.isArray(data) ? data : data ? [data] : [];
+  // inlineData (overview) dirender langsung — tidak pernah lewat fetch/state.
+  const effectiveData = inlineData !== undefined ? inlineData : data;
+  const rows = Array.isArray(effectiveData) ? effectiveData : effectiveData ? [effectiveData] : [];
   if (rows.length === 0) return <p className="text-sm text-ink-muted">{emptyText}</p>;
 
   // ARRAY -> tabel (list: tasks, activity, ...). OBJEK TUNGGAL -> vertical dl (overview).
-  if (Array.isArray(data)) {
+  if (Array.isArray(effectiveData)) {
     const objs = rows as Record<string, unknown>[];
     const keys = [...new Set(objs.flatMap((o) => Object.keys(o)))].filter(
       (k) => !hideKeys.includes(k)

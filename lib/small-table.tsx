@@ -97,6 +97,10 @@ export function SmallTable<T>({
   const sortedTabs = [...tabs].sort((a, b) => (a.position ?? 999) - (b.position ?? 999));
   const [activeTab, setActiveTab] = useState<string>(sortedTabs[0]?.slug ?? "");
   const tab = sortedTabs.find((t) => t.slug === activeTab) ?? sortedTabs[0] ?? null;
+  // Overview = data record SUDAH ada di client (list API return semua kolom) —
+  // render langsung tanpa fetch (padanan legacy: panel kanan isi dari row yang
+  // sudah dimuat; tidak ada "Memuat..." saat pindah record).
+  const isOverviewTab = tab?.slug === "overview";
 
   // Search (client-side) — filter items via getSearchText (atau searchableKeys).
   const [internalSearch, setInternalSearch] = useState("");
@@ -288,6 +292,7 @@ export function SmallTable<T>({
                   refreshKey={refreshKey}
                   hideKeys={tabHideKeys}
                   customValue={tabCustomValue}
+                  inlineData={isOverviewTab ? selected : undefined}
                 />
               ) : (
                 <p className="text-sm text-ink-muted">{tabEmptyText}</p>
