@@ -4,6 +4,23 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { cx } from "@/lib/ui";
 
+/** Badge status berwarna (padanan label status legacy) — dipakai TabContent list. */
+function statusPill(status: string): React.ReactNode {
+  const cls =
+    status === "done"
+      ? "bg-emerald-100 text-emerald-700"
+      : status === "in_progress"
+        ? "bg-amber-100 text-amber-700"
+        : status === "pending"
+          ? "bg-slate-100 text-slate-600"
+          : "bg-slate-100 text-slate-600";
+  return (
+    <span className={"rounded-full px-2 py-0.5 text-xs font-medium " + cls}>
+      {status.replace(/_/g, " ")}
+    </span>
+  );
+}
+
 /**
  * Kontrak tab detail dari manifest modul (detail_tabs[]).
  * Padanan App_tabs::add_customer_profile_tab($slug, $tab) legacy:
@@ -185,6 +202,46 @@ export function TabContent({
 
   const rows = Array.isArray(data) ? data : data ? [data] : [];
   if (rows.length === 0) return <p className="text-sm text-ink-muted">{emptyText}</p>;
+
+  // ARRAY -> tabel (list: tasks, activity, ...). OBJEK TUNGGAL -> vertical dl (overview).
+  if (Array.isArray(data)) {
+    const objs = rows as Record<string, unknown>[];
+    const keys = [...new Set(objs.flatMap((o) => Object.keys(o)))].filter(
+      (k) => !hideKeys.includes(k)
+    );
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-line-soft text-left text-xs uppercase tracking-wider text-ink-faint">
+              {keys.map((k) => (
+                <th key={k} className="px-3 py-2 font-medium">
+                  {k.replace(/_/g, " ")}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-line-soft">
+            {objs.map((o, i) => (
+              <tr key={i}>
+                {keys.map((k) => (
+                  <td key={k} className="px-3 py-2 align-top text-ink">
+                    {customValue?.[k]
+                      ? customValue[k](o[k], o)
+                      : k === "status" && typeof o[k] === "string"
+                        ? statusPill(String(o[k]))
+                        : o[k] === null || o[k] === ""
+                          ? "—"
+                          : String(o[k])}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
