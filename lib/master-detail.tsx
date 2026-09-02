@@ -165,6 +165,25 @@ export function MasterDetail({
   );
 }
 
+// Cache per URL (padanan cache jQuery legacy) — SWR: tampilkan cache dulu,
+// refetch di background. Berlaku SEMUA tab ajax (activity, tasks, ...).
+const tabCache = new Map<string, unknown>();
+
+/** Skeleton halus saat first-load (pengganti teks "Memuat..."). */
+function TabSkeleton() {
+  return (
+    <div className="space-y-3">
+      {[100, 85, 70, 90].map((w, i) => (
+        <div
+          key={i}
+          className="h-4 animate-pulse rounded bg-line-soft"
+          style={{ width: `${w}%` }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export function TabContent({
   url,
   emptyText,
@@ -184,24 +203,40 @@ export function TabContent({
   /** Data langsung tanpa fetch (padanan legacy: record sudah ada di client). */
   inlineData?: unknown;
 }) {
-  const [data, setData] = useState<unknown>(inlineData ?? null);
+  // refreshKey masuk key cache → setelah edit, url dianggap baru (fetch fresh).
+  const cacheKey = `${url}#${refreshKey}`;
+  const cached = tabCache.get(cacheKey);
+  const [data, setData] = useState<unknown>(inlineData ?? cached ?? null);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(inlineData === undefined);
+  const [loading, setLoading] = useState(
+    inlineData === undefined && cached === undefined
+  );
 
   useEffect(() => {
     if (inlineData !== undefined) return; // render langsung, tanpa ajax
-    setLoading(true);
+
+    // SWR: cache ada -> tampilkan sekarang, tetap refetch di background.
+    const hit = tabCache.get(cacheKey);
+    if (hit !== undefined) {
+      setData(hit);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
     setError(null);
     api<{ data?: unknown }>(url)
       .then((res) => {
-        if (res.ok) setData(res.data?.data ?? res.data);
-        else setError(res.error ?? "Gagal memuat");
+        if (res.ok) {
+          const d = res.data?.data ?? res.data;
+          tabCache.set(cacheKey, d); // simpan cache
+          setData(d);
+        } else setError(res.error ?? "Gagal memuat");
       })
       .catch(() => setError("Gagal memuat"))
       .finally(() => setLoading(false));
-  }, [url, refreshKey, inlineData]);
+  }, [cacheKey, url, refreshKey, inlineData]);
 
-  if (loading) return <p className="text-sm text-ink-muted">Memuat...</p>;
+  if (loading) return <TabSkeleton />;
   if (error) return <p className="text-sm text-danger">{error}</p>;
 
   // inlineData (overview) dirender langsung — tidak pernah lewat fetch/state.
