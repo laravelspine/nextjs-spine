@@ -34,4 +34,22 @@ export interface ModuleContext {
   ui: ModuleUiApi;
   /** Terjemahan milik module sendiri (`{module.id}.{key}`). */
   t: (key: string) => string;
+  /** Registri terjemahan modul — modul tidak perlu impor core. */
+  i18n: {
+    addTranslations(ns: string, messages: Record<string, string>): void;
+  };
+}
+
+/**
+ * Entri manifest modul dari backend (GET /api/v1/modules/extensions).
+ * Core TIDAK punya daftar modul hardcoded — admin Laravel yang menentukan
+ * mana yang aktif; klien hanya diarahkan ke `entry_url` bundle tiap modul.
+ */
+export interface ModuleManifestEntry {
+  name: string;
+  /** Alias/lowercase module — id unik. */
+  alias: string;
+  enabled: boolean;
+  /** URL bundle frontend modul (JS ESM). Kosong = modul hanya data-driven. */
+  entry_url?: string | null;
 }

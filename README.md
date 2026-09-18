@@ -48,7 +48,7 @@ lib/
   api.ts                 # fetch wrapper tipis (token bearer + error)
   auth-context.tsx       # AuthProvider (token Sanctum di localStorage)
   extensions/            # UI Extension Registry + permission + i18n
-  modules/               # Module Registry (kontrak SpineModule + loader + demo)
+  modules/               # kontrak SpineModule + runtime loader (discovery URL)
   master-detail.tsx      # helper list + panel detail bertab (induk)
   small-table.tsx        # DataTable + detail (padanan legacy)
   ui.tsx                 # design-token UI (Button, Card, Badge, ...)
@@ -58,17 +58,40 @@ lib/
 
 `nextjs-spine` adalah **extensible frontend runtime**: module frontend
 mendaftarkan UI sendiri (tab profile/settings, navigasi, widget dashboard)
-lewat `lib/extensions` tanpa memodifikasi Core. Module memakai kontrak
-`SpineModule` (`lib/modules/types.ts`) dan di-boot lewat `bootModules()`
-di `lib/modules/index.ts`. Area ekstensi:
+lewat `lib/extensions` tanpa memodifikasi Core. Area ekstensi:
 
 ```
 navigation.main · navigation.profile · profile.tabs · profile.sections
 settings.tabs · settings.sections · dashboard.widgets
 ```
 
-Contoh implementasi lengkap ada di `lib/modules/demo-referrals/` (module demo
-"Referrals" — tab di /profile dan /settings, widget di dashboard, item nav).
+**Discovery backend-driven (pola WordPress/PerfexCRM):** Core TIDAK memuat
+daftar modul hardcoded. Admin Laravel menentukan modul aktif; manifest
+`GET /api/v1/modules/extensions` mengembalikan tiap modul aktif beserta
+`entry_url` bundle frontend-nya. `app/module-host.tsx` (dipasang di root
+layout) memakai `useModuleManifest()` (`lib/modules/use-modules.ts`) untuk
+mengambil manifest (deps `token`) lalu `lib/modules/runtime.ts` melakukan
+`import(url)` runtime pada bundle aktif. Bundle mengekspor `default`
+`SpineModule` (`lib/modules/types.ts`) yang memanggil `context.ui.*.register()`
+dan `context.i18n.addTranslations()`. Tanpa `entry_url`, modul tetap
+berkontribusi lewat lapisan data (menu/widget/tab API).
+
+Bridge host (`globalThis.__SPINE__`) mengekspos instance React host serta
+base URL API (`lib/api.ts` `API_URL`) supaya bundle tidak membawa React sendiri
+— menghindari masalah duplikasi React.
+
+**Contoh modul frontend** (repo terpisah, struktur bundel lengkap):
+`/www/wwwroot/spine-modules/sampletasks` — bundel `dist/sampletasks.module.js`
+yang meregistrasi widget dashboard + tab `profile.tabs` + section
+`profile.sections`, dengan `npm run build` / `serve` / `test:contract`.
+
+**Kontrak backend** (`spine/laravel-spine`, lihat `../laravelspine/public_html`):
+- `manifest.php` modul boleh menambah `'frontend' => ['entry_url' => '/api/v1/modules/assets/{alias}/{file}.js']`.
+- Backend menyajikan bundle publik lewat route `GET /api/v1/modules/assets/{alias}/{file}`
+  (dari `Modules/{Name}/frontend/dist/`, dengan CORS `*`) — lihat
+  `ModuleController::asset()`.
+- `ModuleController::extensions()` mengembalikan `modules: [{name, alias, enabled, entry_url}]`
+  untuk semua modul aktif — sumber tunggal discovery frontend.
 
 ## Pola
 

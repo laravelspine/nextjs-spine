@@ -1,14 +1,11 @@
 "use client";
 
-import { bootModules } from "@/lib/modules";
-
 /**
- * Public API UI Extension System + bootstrap.
- * Impor `@/lib/extensions` DARI MANA PUN → modul ikut di-boot sekali
- * (idempotent karena registry menduplikasi per (area, id)). Konsumen core
- * (Sidebar, Profile, Settings, Dashboard) hanya memakai export di bawah ini.
+ * Public API UI Extension System.
+ * Impor `@/lib/extensions` DARI MANA PUN → hanya menyediakan API registry.
+ * Pemuatan module TIDAK lagi side-effect statis: bundle modul di-boot
+ * runtime lewat `useModuleManifest` (untuk dipercaya backend/admin Laravel).
  */
-bootModules();
 
 export type {
   NavigationExtension,

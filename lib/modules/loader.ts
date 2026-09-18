@@ -1,5 +1,5 @@
 import { register } from "@/lib/extensions/registry";
-import { t } from "@/lib/extensions/i18n";
+import { addTranslations, t } from "@/lib/extensions/i18n";
 import type {
   NavigationExtension,
   SectionExtension,
@@ -25,10 +25,11 @@ export function createModuleContext(module: SpineModule): ModuleContext {
     module: { id: module.id, name: module.name, version: module.version },
     ui,
     t: (key: string) => t({ namespace: module.id, key }),
+    i18n: { addTranslations },
   };
 }
 
-/** Muat (register) satu kumpulan module. Panggil sekali saat boot. */
+/** Muat (register) satu kumpulan module. Panggil saat bundle tiba. */
 export function loadModules(modules: SpineModule[]) {
   for (const m of modules) {
     m.register(createModuleContext(m));
