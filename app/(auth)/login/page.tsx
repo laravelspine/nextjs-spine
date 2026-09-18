@@ -7,10 +7,9 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { Button, Card, ErrorNotice, Field, Input } from "@/lib/ui";
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const router = useRouter();
   const { signIn } = useAuth();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -21,72 +20,65 @@ export default function RegisterPage() {
     setLoading(true);
     setError(null);
 
-    const res = await api<{ token: string }>("/api/v1/auth/register", {
+    const res = await api<{ token: string }>("/api/v1/auth/login", {
       method: "POST",
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ email, password }),
     });
 
     if (!res.ok || !res.data.token) {
       setLoading(false);
-      setError(res.error ?? "Registrasi gagal");
+      setError(res.error ?? "Login gagal");
       return;
     }
 
     await signIn(res.data.token);
-    router.push("/");
+    router.push("/dashboard");
     router.refresh();
   }
 
   return (
     <div className="mx-auto max-w-sm space-y-6 pt-12">
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-ink">Daftar</h1>
-        <p className="mt-1 text-sm text-ink-muted">Buat akun baru di Spine</p>
+        <h1 className="text-2xl font-bold text-ink">Masuk</h1>
+        <p className="mt-1 text-sm text-ink-muted">
+          Demo: <code className="text-accent-strong">demo@spine.test</code> /{" "}
+          <code className="text-accent-strong">password</code>
+        </p>
       </div>
 
       <Card>
         <form onSubmit={onSubmit} className="space-y-4">
-          <Field label="Nama">
-            <Input
-              type="text"
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Nama Lengkap"
-            />
-          </Field>
           <Field label="Email">
             <Input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="nama@email.com"
+              placeholder="demo@spine.test"
             />
           </Field>
           <Field label="Password">
             <Input
               type="password"
               required
-              minLength={8}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Minimal 8 karakter"
+              placeholder="password"
             />
           </Field>
 
           {error && <ErrorNotice message={error} />}
 
           <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Memproses..." : "Daftar"}
+            {loading ? "Memproses..." : "Masuk"}
           </Button>
         </form>
       </Card>
 
       <p className="text-center text-sm text-ink-muted">
-        Sudah punya akun?{" "}
-        <Link href="/login" className="text-accent-strong hover:underline">
-          Masuk
+        Belum punya akun?{" "}
+        <Link href="/register" className="text-accent-strong hover:underline">
+          Daftar
         </Link>
       </p>
     </div>

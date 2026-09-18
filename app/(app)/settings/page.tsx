@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Button, Card, ErrorNotice, Field, Input, PageHeader, Textarea } from "@/lib/ui";
+import { ExtensionSlot, t, useExtensions } from "@/lib/extensions";
 
 /** Field aksi (tombol) — memanggil endpoint dari kontrak action. */
 function ActionField({
@@ -78,6 +79,11 @@ export default function SettingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  // Tab UI-extension dari modul frontend (settings.tabs) — disisipkan
+  // ke nav yang sama tanpa mengubah logika schema di bawah.
+  const extTabs = useExtensions("settings.tabs");
+  const isExtTab = active?.startsWith("ext:") ?? false;
+  const extTab = extTabs.find((e) => `ext:${e.id}` === active);
 
   useEffect(() => {
     api<{ tabs: SettingsTab[] }>("/api/v1/settings/schema")
@@ -88,14 +94,14 @@ export default function SettingsPage() {
         }
         const list = res.data.tabs ?? [];
         setTabs(list);
-        if (list.length > 0 && active === null) {
+        if (list.length > 0 && active === null && !isExtTab) {
           setActive(list[0].slug);
         }
       })
       .catch(() => setError("Gagal memuat schema"));
-  }, [active]);
+  }, [active, isExtTab]);
 
-  const tab = tabs.find((t) => t.slug === active);
+  const tab = isExtTab ? undefined : tabs.find((t) => t.slug === active);
 
   const loadValues = useCallback(
     (t: SettingsTab | undefined) => {
@@ -156,11 +162,14 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Settings" desc="Tab & field dari manifest modul aktif (schema API)." />
+      <PageHeader
+        title="Settings"
+        desc="Tab dari manifest modul aktif (schema API) + tab ekstensi UI modul (settings.tabs)."
+      />
 
       {error && <ErrorNotice message={error} />}
 
-      {tabs.length === 0 && !error && (
+      {tabs.length === 0 && extTabs.length === 0 && !error && (
         <Card>
           <p className="text-sm text-ink-muted">
             Tidak ada tab settings dari modul aktif.
@@ -168,7 +177,7 @@ export default function SettingsPage() {
         </Card>
       )}
 
-      {tab && (
+      {(tab || extTab) && (
         <div className="flex flex-col gap-6 lg:flex-row">
           {/* Tab nav (kiri) — pola NextAdmin profile */}
           <nav className="flex w-full shrink-0 gap-2 lg:w-64 lg:flex-col">
@@ -191,10 +200,38 @@ export default function SettingsPage() {
                 </button>
               );
             })}
+            {extTabs.map((e) => {
+              const key = `ext:${e.id}`;
+              const isActive = key === active;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setActive(key)}
+                  className={
+                    "flex items-center gap-3 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors " +
+                    (isActive
+                      ? "border-accent/40 bg-accent-soft/40 text-ink"
+                      : "border-line-soft bg-surface-raised text-ink-muted hover:text-ink")
+                  }
+                >
+                  {e.icon && <span className="text-base">{e.icon}</span>}
+                  {t(e.label)}
+                  <span className="ml-auto text-[10px] uppercase tracking-wider text-accent-strong">
+                    modul
+                  </span>
+                </button>
+              );
+            })}
           </nav>
 
           {/* Form (kanan) — pola NextAdmin account */}
           <div className="min-w-0 flex-1">
+            {isExtTab && extTab ? (
+              <Card>
+                <ExtensionSlot component={extTab.component} />
+              </Card>
+            ) : tab ? (
             <Card>
               <h2 className="mb-5 text-lg font-semibold text-ink">{tab.label}</h2>
               <div className="space-y-4">
@@ -258,6 +295,7 @@ export default function SettingsPage() {
                 </div>
               </div>
             </Card>
+            ) : null}
           </div>
         </div>
       )}

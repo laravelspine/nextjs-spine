@@ -4,10 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useModuleExtensions } from "@/lib/module-extensions";
 import { useAuth } from "@/lib/auth-context";
+import { useExtensions, t } from "@/lib/extensions";
 import { cx } from "@/lib/ui";
 
 const core = [
   { href: "/", label: "Beranda" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/api", label: "API" },
   { href: "/hooks", label: "Hook" },
   { href: "/tenants", label: "Tenant" },
@@ -23,19 +25,20 @@ const examples = [
   { href: "/activity-logs", label: "Activity Logs" },
 ];
 
-function Item({ href, label }: { href: string; label: string }) {
+function Item({ href, label, icon }: { href: string; label: string; icon?: string }) {
   const pathname = usePathname();
   const active = pathname === href;
   return (
     <Link
       href={href}
       className={cx(
-        "block rounded-md px-3 py-1.5 text-sm transition-colors",
+        "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
         active
           ? "bg-accent-soft font-medium text-accent-strong"
           : "text-ink-muted hover:bg-surface-overlay hover:text-ink"
       )}
     >
+      {icon && <span className="text-xs">{icon}</span>}
       {label}
     </Link>
   );
@@ -52,6 +55,7 @@ function GroupTitle({ children }: { children: React.ReactNode }) {
 export default function Sidebar() {
   const { user, loading } = useAuth();
   const { menu: moduleMenu } = useModuleExtensions();
+  const navExt = useExtensions("navigation.main");
 
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r border-line-soft bg-surface-raised">
@@ -83,6 +87,15 @@ export default function Sidebar() {
             <GroupTitle>Modul</GroupTitle>
             {moduleMenu.map((i) => (
               <Item key={i.slug} href={i.href} label={i.label} />
+            ))}
+          </div>
+        )}
+
+        {navExt.length > 0 && (
+          <div className="space-y-1">
+            <GroupTitle>Ekstensi UI</GroupTitle>
+            {navExt.map((i) => (
+              <Item key={i.id} href={i.href} label={t(i.label)} icon={i.icon} />
             ))}
           </div>
         )}

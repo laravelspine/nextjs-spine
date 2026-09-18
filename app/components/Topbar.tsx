@@ -6,7 +6,9 @@ import UserDropdown from "./UserDropdown";
 import { NotificationButton } from "./NotificationButton";
 
 const titles: Record<string, string> = {
-  "/": "Dashboard",
+  "/": "Beranda",
+  "/dashboard": "Dashboard",
+  "/profile": "Profile",
   "/api": "API",
   "/hooks": "Hook",
   "/tenants": "Tenant",
