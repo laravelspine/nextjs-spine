@@ -10,6 +10,7 @@ import { cx } from "@/lib/ui";
 const core = [
   { href: "/", label: "Beranda" },
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/profile", label: "Profile" },
   { href: "/api", label: "API" },
   { href: "/hooks", label: "Hook" },
   { href: "/tenants", label: "Tenant" },
