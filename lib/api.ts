@@ -29,8 +29,10 @@ export async function api<T = unknown>(
 ): Promise<ApiResult<T>> {
   const headers: Record<string, string> = {
     Accept: "application/json",
-    ...(options.body ? { "Content-Type": "application/json" } : {}),
   };
+  if (options.body && !(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
 

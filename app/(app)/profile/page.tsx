@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { Badge, Card, PageHeader, cx } from "@/lib/ui";
+import { useI18n } from "@/lib/i18n-context";
+import { Badge, Button, Card, PageHeader } from "@/lib/ui";
 import { ExtensionSlot, t, useExtensions } from "@/lib/extensions";
+import { api } from "@/lib/api";
 
 /**
  * /profile — halaman core Profile.
- * Core mendefinisikan tab dasar (Overview/Security/Sessions); modul
+ * Core mendefinisikan tab dasar (Overview/Security/Sessions/Language); modul
  * menambah tab/section lewat UI Extension Registry (`profile.tabs`,
  * `profile.sections`) tanpa menyentuh file ini.
  */
@@ -91,20 +93,67 @@ function ProfileSessions() {
   );
 }
 
+function ProfileLanguage() {
+  const { locale, setLocale } = useI18n();
+  const [currentLang, setCurrentLang] = useState(locale);
+
+  const languages = [
+    { value: "en", label: "English" },
+    { value: "id", label: "Indonesia" },
+    { value: "ko", label: "한국어" },
+    { value: "zh", label: "中文" },
+    { value: "ja", label: "日本語" },
+  ];
+
+  function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const val = e.target.value as typeof locale;
+    setCurrentLang(val);
+    setLocale(val);
+  }
+
+  return (
+    <Card title="Language">
+      <div className="space-y-4">
+        <div>
+          <label className="mb-2 block text-sm font-medium text-ink">
+            Choose your preferred language
+          </label>
+          <select
+            value={currentLang}
+            onChange={handleChange}
+            className="w-full rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink focus:border-accent focus:outline-none"
+          >
+            {languages.map((lang) => (
+              <option key={lang.value} value={lang.value}>
+                {lang.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <p className="text-xs text-ink-faint">
+          Language preference is saved locally. Backend settings will be added soon.
+        </p>
+      </div>
+    </Card>
+  );
+}
+
 export default function ProfilePage() {
   const { user } = useAuth();
   const extTabs = useExtensions("profile.tabs");
   const sections = useExtensions("profile.sections");
+  const { t } = useI18n();
 
   const coreTabs: ProfileTab[] = [
-    { id: "overview", label: "Overview", render: () => <ProfileOverview /> },
-    { id: "security", label: "Security", render: () => <ProfileSecurity /> },
-    { id: "sessions", label: "Sessions", render: () => <ProfileSessions /> },
+    { id: "overview", label: t("profile.overview"), render: () => <ProfileOverview /> },
+    { id: "security", label: t("profile.security"), render: () => <ProfileSecurity /> },
+    { id: "sessions", label: t("profile.sessions"), render: () => <ProfileSessions /> },
+    { id: "language", label: t("profile.language"), render: () => <ProfileLanguage /> },
   ];
 
   const extTabDefs: ProfileTab[] = extTabs.map((e) => ({
     id: e.id,
-    label: t(e.label),
+    label: typeof e.label === "string" ? e.label : e.label.key,
     icon: e.icon,
     render: () => <ExtensionSlot component={e.component} />,
   }));
@@ -122,7 +171,7 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Profile" desc="Halaman core — tab modul disisipkan di sini." />
+      <PageHeader title={t("profile.title")} desc={t("profile.description")} />
 
       <div className="rounded-xl border border-line-soft bg-surface-raised p-5">
         <div className="flex items-center gap-4">
@@ -145,12 +194,12 @@ export default function ProfilePage() {
                 key={tb.id}
                 type="button"
                 onClick={() => setActive(tb.id)}
-                className={cx(
-                  "flex items-center gap-3 rounded-lg border px-3 py-2 text-left text-sm transition-colors",
-                  isActive
+                className={
+                  "flex items-center gap-3 rounded-lg border px-3 py-2 text-left text-sm transition-colors " +
+                  (isActive
                     ? "border-accent/40 bg-accent-soft text-accent-strong"
-                    : "border-line-soft bg-surface-overlay text-ink-muted hover:text-ink"
-                )}
+                    : "border-line-soft bg-surface-overlay text-ink-muted hover:text-ink")
+                }
               >
                 {tb.icon && <span className="text-base">{tb.icon}</span>}
                 {tb.label}
