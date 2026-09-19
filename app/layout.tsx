@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AuthProvider } from "@/lib/auth-context";
 import { I18nProvider } from "@/lib/i18n-context";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { QueryProviders } from "./components/QueryProviders";
 import ModuleHost from "./module-host";
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
@@ -49,14 +50,16 @@ export default function RootLayout({
         <ThemeProvider>
           <I18nProvider>
             <AuthProvider>
-              <ModuleHost />
-              <div className="flex h-screen overflow-hidden">
-                <Sidebar />
-                <div className="flex min-w-0 flex-1 flex-col">
-                  <Topbar />
-                  <main className="flex-1 overflow-y-auto px-6 py-8">{children}</main>
+              <QueryProviders>
+                <ModuleHost />
+                <div className="flex h-screen overflow-hidden">
+                  <Sidebar />
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <Topbar />
+                    <main className="flex-1 overflow-y-auto px-6 py-8">{children}</main>
+                  </div>
                 </div>
-              </div>
+              </QueryProviders>
             </AuthProvider>
           </I18nProvider>
         </ThemeProvider>

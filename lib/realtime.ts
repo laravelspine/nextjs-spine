@@ -55,9 +55,12 @@ export async function realtimeStart(userId: number): Promise<void> {
       return;
     }
 
+    // Catatan: laravel-echo memakai `options.client` langsung sebagai pusher
+    // instance (bukan kelas). Lewati `client` dan biarkan Echo membuat instance
+    // sendiri lewat `options.Pusher` (nama besar, kontras dengan `client`).
     echo = new EchoClass({
       broadcaster: "reverb",
-      client: Pusher,
+      Pusher: Pusher,
       key: res.data.key,
       wsHost: res.data.host,
       wsPort: res.data.port ?? 8080,
