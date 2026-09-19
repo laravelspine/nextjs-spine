@@ -68,10 +68,10 @@ function ProfileSecurity() {
         ].map(([label, value]) => (
           <div
             key={label}
-            className="flex items-center justify-between rounded-lg border border-line-soft px-3 py-2"
+            className="security-row flex items-center justify-between rounded-lg border border-line-soft px-3 py-2"
           >
-            <span className="text-sm text-ink">{label}</span>
-            <span className="text-xs text-ink-faint">{value}</span>
+            <span className="security-row__label text-sm text-ink">{label}</span>
+            <span className="security-row__value text-xs text-ink-faint">{value}</span>
           </div>
         ))}
       </div>
@@ -86,7 +86,7 @@ function ProfileSessions() {
         Daftar sesi aktif (perangkat + lokasi) bisa diekspos modul/endpoint
         backend. Saat ini daftar sesi belum tersedia di API /api/v1.
       </p>
-      <div className="mt-4 rounded-lg border border-dashed border-line-soft px-4 py-6 text-center text-sm text-ink-faint">
+      <div className="profile-sessions__empty mt-4 rounded-lg border border-dashed border-line-soft px-4 py-6 text-center text-sm text-ink-faint">
         Belum ada daftar sesi.
       </div>
     </Card>
@@ -173,12 +173,12 @@ export default function ProfilePage() {
     <div className="space-y-6">
       <PageHeader title={t("profile.title")} desc={t("profile.description")} />
 
-      <div className="rounded-xl border border-line-soft bg-surface-raised p-5">
-        <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-accent-soft text-2xl font-bold text-accent-strong">
+      <div className="profile-card rounded-xl border border-line-soft bg-surface-raised p-5">
+        <div className="profile-card__body flex items-center gap-4">
+          <div className="profile-card__avatar flex h-14 w-14 items-center justify-center rounded-xl bg-accent-soft text-2xl font-bold text-accent-strong">
             {(user?.name ?? "?").charAt(0).toUpperCase()}
           </div>
-          <div className="min-w-0">
+          <div className="profile-card__identity min-w-0">
             <h2 className="truncate text-lg font-semibold text-ink">{user?.name}</h2>
             <p className="truncate text-sm text-ink-muted">{user?.email}</p>
           </div>
@@ -186,7 +186,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="flex flex-col gap-6 lg:flex-row">
-        <nav className="flex w-full shrink-0 gap-2 lg:w-56 lg:flex-col">
+        <nav className="profile-tabs flex w-full shrink-0 gap-2 lg:w-56 lg:flex-col">
           {tabs.map((tb) => {
             const isActive = tb.id === active;
             return (
@@ -195,16 +195,16 @@ export default function ProfilePage() {
                 type="button"
                 onClick={() => setActive(tb.id)}
                 className={
-                  "flex items-center gap-3 rounded-lg border px-3 py-2 text-left text-sm transition-colors " +
+                  "profile-tabs__tab flex items-center gap-3 rounded-lg border px-3 py-2 text-left text-sm transition-colors " +
                   (isActive
-                    ? "border-accent/40 bg-accent-soft text-accent-strong"
+                    ? "profile-tabs__tab--active border-accent/40 bg-accent-soft text-accent-strong"
                     : "border-line-soft bg-surface-overlay text-ink-muted hover:text-ink")
                 }
               >
                 {tb.icon && <span className="text-base">{tb.icon}</span>}
                 {tb.label}
                 {!coreTabs.some((c) => c.id === tb.id) && (
-                  <span className="ml-auto text-[10px] uppercase tracking-wider text-accent-strong">
+                  <span className="profile-tabs__modul-tag ml-auto text-[10px] uppercase tracking-wider text-accent-strong">
                     modul
                   </span>
                 )}

@@ -76,9 +76,9 @@ const groups = [
 
 export default function ApiPage() {
   return (
-    <div className="space-y-8">
-      <header>
-        <h1 className="text-2xl font-bold">Daftar Endpoint API</h1>
+    <div className="api-docs space-y-8">
+      <header className="api-docs__hero">
+        <h1 className="api-docs__title text-2xl font-bold">Daftar Endpoint API</h1>
         <p className="mt-2 text-sm text-ink-muted">
           Semua endpoint di bawah <code className="text-accent-strong">/api/v1</code>{" "}
           butuh header <code className="text-accent-strong">Authorization: Bearer &lt;token&gt;</code>{" "}
@@ -87,24 +87,25 @@ export default function ApiPage() {
       </header>
 
       {groups.map((g) => (
-        <section key={g.name}>
+        <section key={g.name} className="endpoint-group">
           <h2 className="text-lg font-semibold text-accent-strong">{g.name}</h2>
           <div className="mt-3 overflow-x-auto rounded-lg border border-line-soft">
-            <table className="w-full text-sm">
-              <thead className="bg-surface-raised text-left text-ink-faint">
-                <tr>
-                  <th className="px-4 py-2 font-medium">Method</th>
-                  <th className="px-4 py-2 font-medium">Path</th>
-                  <th className="px-4 py-2 font-medium">Keterangan</th>
+            <table className="data-table w-full text-sm">
+              <thead className="data-table__head bg-surface-raised text-left text-ink-faint">
+                <tr className="data-table__row">
+                  <th className="data-table__head-cell px-4 py-2 font-medium">Method</th>
+                  <th className="data-table__head-cell px-4 py-2 font-medium">Path</th>
+                  <th className="data-table__head-cell px-4 py-2 font-medium">Keterangan</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-line-soft">
+              <tbody className="data-table__body divide-y divide-line-soft">
                 {g.endpoints.map(([m, p, d]) => (
-                  <tr key={m + p}>
-                    <td className="px-4 py-2">
+                  <tr key={m + p} className="data-table__row">
+                    <td className="data-table__cell px-4 py-2">
                       <span
                         className={
-                          "rounded px-1.5 py-0.5 text-xs font-mono " +
+                          "method-marker method-marker--" + m.toLowerCase() +
+                          " rounded px-1.5 py-0.5 text-xs font-mono " +
                           (m === "GET"
                             ? "bg-info/10 text-info"
                             : m === "POST"
@@ -117,8 +118,8 @@ export default function ApiPage() {
                         {m}
                       </span>
                     </td>
-                    <td className="px-4 py-2 font-mono text-ink">{p}</td>
-                    <td className="px-4 py-2 text-ink-faint">{d}</td>
+                    <td className="data-table__cell px-4 py-2 font-mono text-ink">{p}</td>
+                    <td className="data-table__cell px-4 py-2 text-ink-faint">{d}</td>
                   </tr>
                 ))}
               </tbody>

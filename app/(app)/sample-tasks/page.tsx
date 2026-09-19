@@ -26,12 +26,12 @@ const STATUSES = ["pending", "in_progress", "done"] as const;
 const statusBadge = (status: string) => (
   <span
     className={
-      "rounded-full px-2 py-0.5 text-xs font-medium " +
+      "status-pill rounded-full px-2 py-0.5 text-xs font-medium " +
       (status === "done"
-        ? "bg-emerald-100 text-emerald-700"
+        ? "status-pill--done bg-emerald-100 text-emerald-700"
         : status === "in_progress"
-          ? "bg-amber-100 text-amber-700"
-          : "bg-slate-100 text-slate-600")
+          ? "status-pill--progress bg-amber-100 text-amber-700"
+          : "status-pill--pending bg-slate-100 text-slate-600")
     }
   >
     {status}
@@ -201,25 +201,25 @@ export default function SampleTasksPage() {
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          className="modal__backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
           onClick={() => {
             setOpen(false);
             setEditing(null);
           }}
         >
           <div
-            className="w-full max-w-md rounded-xl border border-line-soft bg-surface-raised p-5 shadow-card"
+            className="modal__dialog w-full max-w-md rounded-xl border border-line-soft bg-surface-raised p-5 shadow-card"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="mb-4 text-sm font-semibold text-ink">
+            <h2 className="modal__title mb-4 text-sm font-semibold text-ink">
               {editing ? `Edit Task #${editing.id}` : "Create Task"}
             </h2>
-            <div className="space-y-3">
+            <div className="modal__body space-y-3">
               <Field label="Sample Item (parent)">
                 <select
                   value={parentId}
                   onChange={(e) => setParentId(e.target.value)}
-                  className="w-full rounded-lg border border-line-soft bg-surface-raised px-3 py-2 text-sm text-ink"
+                  className="select w-full rounded-lg border border-line-soft bg-surface-raised px-3 py-2 text-sm text-ink"
                 >
                   <option value="">Pilih parent...</option>
                   {sampleItems.map((s) => (
@@ -241,7 +241,7 @@ export default function SampleTasksPage() {
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full rounded-lg border border-line-soft bg-surface-raised px-3 py-2 text-sm text-ink"
+                  className="select w-full rounded-lg border border-line-soft bg-surface-raised px-3 py-2 text-sm text-ink"
                 >
                   {STATUSES.map((s) => (
                     <option key={s} value={s}>
@@ -256,7 +256,7 @@ export default function SampleTasksPage() {
                 <ErrorNotice message={error} />
               </div>
             )}
-            <div className="mt-4 flex justify-end gap-2">
+            <div className="modal__actions mt-4 flex justify-end gap-2">
               <Button
                 variant="secondary"
                 onClick={() => {
@@ -315,11 +315,11 @@ export default function SampleTasksPage() {
           <>
             <div className="relative" data-markas>
               {/* Menu "Mark as {STATUS}" — 3 tombol, klik -> PUT -> badge via ajax */}
-              <details className="group relative">
-                <summary className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-line-soft bg-surface px-3 py-1.5 text-sm text-ink transition-colors hover:bg-surface-overlay">
+              <details className="markas group relative">
+                <summary className="markas__trigger inline-flex cursor-pointer items-center gap-1.5 rounded-md border border-line-soft bg-surface px-3 py-1.5 text-sm text-ink transition-colors hover:bg-surface-overlay">
                   Mark as ▾
                 </summary>
-                <div className="absolute right-0 z-20 mt-1 w-40 overflow-hidden rounded-lg border border-line-soft bg-surface-raised py-1 shadow-card">
+                <div className="markas__menu absolute right-0 z-20 mt-1 w-40 overflow-hidden rounded-lg border border-line-soft bg-surface-raised py-1 shadow-card">
                   {STATUSES.map((s) => (
                     <button
                       key={s}
@@ -327,7 +327,7 @@ export default function SampleTasksPage() {
                       onClick={() => markStatus(item, s)}
                       disabled={item.status === s}
                       className={
-                        "block w-full px-3 py-1.5 text-left text-sm " +
+                        "markas__item block w-full px-3 py-1.5 text-left text-sm " +
                         (item.status === s
                           ? "cursor-default bg-accent-soft text-accent-strong"
                           : "text-ink hover:bg-surface-overlay")

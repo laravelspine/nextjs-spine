@@ -51,13 +51,13 @@ function ActivityFeed() {
   }
 
   return (
-    <ol className="space-y-4">
+    <ol className="activity-feed space-y-4">
       {logs.map((log) => (
-        <li key={log.id} className="flex items-start gap-3">
-          <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-accent/60" />
-          <div className="min-w-0">
+        <li key={log.id} className="activity-feed__item flex items-start gap-3">
+          <span className="activity-feed__dot mt-1.5 h-2 w-2 shrink-0 rounded-full bg-accent/60" />
+          <div className="activity-feed__body min-w-0">
             <p className="truncate text-sm text-ink">{log.description}</p>
-            <p className="mt-0.5 text-xs text-ink-faint">
+            <p className="activity-feed__meta mt-0.5 text-xs text-ink-faint">
               {log.created_at
                 ? new Date(log.created_at).toLocaleString("id-ID")
                 : "—"}
@@ -83,22 +83,22 @@ export default function DashboardPage() {
   const extWidgets = useExtensions("dashboard.widgets");
 
   return (
-    <div className="space-y-8">
-      <section>
+    <div className="dashboard space-y-8">
+      <section className="dashboard-hero">
         <p className="text-[11px] font-medium uppercase tracking-wider text-ink-faint">
           Dashboard
         </p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight text-ink">
+        <h1 className="dashboard-hero__title mt-1 text-3xl font-bold tracking-tight text-ink">
           Selamat datang kembali,{" "}
           <span className="text-accent-strong">{user?.name}</span>
         </h1>
-        <p className="mt-2 flex items-center gap-2 text-sm text-ink-muted">
+        <p className="dashboard-hero__identity mt-2 flex items-center gap-2 text-sm text-ink-muted">
           <span>Login sebagai {user?.email}</span>
           <Badge tone="accent">id {user?.id}</Badge>
         </p>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="dashboard-stats grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Activity Logs"
           value={logs.count ?? "—"}
@@ -110,7 +110,7 @@ export default function DashboardPage() {
         <StatCard label="Contoh Halaman" value={quickLinks.length} hint="Lihat sidebar" />
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-5">
+      <section className="dashboard-grid grid gap-4 lg:grid-cols-5">
         <div className="lg:col-span-3 rounded-xl border border-line-soft bg-surface-raised p-5">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-ink">Aktivitas Terbaru</h2>
@@ -127,15 +127,15 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 space-y-4">
           <div className="rounded-xl border border-line-soft bg-surface-raised p-5">
             <h2 className="mb-4 text-sm font-semibold text-ink">Contoh Halaman</h2>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="dashboard-quick-links grid grid-cols-2 gap-3">
               {quickLinks.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
-                  className="rounded-lg border border-line-soft bg-surface p-3 transition-colors hover:border-accent/40"
+                  className="quick-link rounded-lg border border-line-soft bg-surface p-3 transition-colors hover:border-accent/40"
                 >
-                  <div className="text-lg">{l.icon}</div>
-                  <div className="mt-1 text-sm font-medium text-ink">{l.label}</div>
+                  <div className="quick-link__icon text-lg">{l.icon}</div>
+                  <div className="quick-link__label mt-1 text-sm font-medium text-ink">{l.label}</div>
                 </Link>
               ))}
             </div>
@@ -144,7 +144,7 @@ export default function DashboardPage() {
           <ModuleWidgets />
 
           {extWidgets.length > 0 && (
-            <div className="space-y-4">
+            <div className="dashboard-extension-widgets space-y-4">
               {extWidgets.map((w) => (
                 <ExtensionSlot key={w.id} component={w.component} />
               ))}

@@ -104,6 +104,33 @@ Aturan:
 </div>
 ```
 
+## Halaman & pattern bersama
+
+Kosakata blok lintas halaman (pakai untuk halaman baru alih-alih kelas generik):
+
+| Blok | Pemakaian |
+|---|---|
+| `.data-table-wrap` / `.data-table` | wrapper overflow + tabel data (tanpa interaksi) |
+| `.data-table__head` `.data-table__body` `.data-table__row` `.data-table__head-cell` `.data-table__cell` | struktur tabel |
+| `.method-marker--get/post/put/delete` | badge method endpoint (`/api`) |
+| `.docs-card` (+ `__title`, `__code`) | kartu info dokumentasi (`/hooks`, `/tenants`) |
+| `.modal__backdrop` `__dialog` `__title` `__body` `__actions` | dialog overlay (Sample, SampleTasks) |
+| `.form-field` `+ .form-field__actions` | wrapper label+input manual di form |
+| `.select` | elemen `<select>` tanpa komponen `Input` |
+| `.auth-heading` (+ `__title`, `__desc`) `.auth-footer` | halaman login/register |
+| `.profile-card` (+ `__body`, `__avatar`, `__identity`) `.profile-tabs` (+ `__tab`, `--active`, `__modul-tag`) | halaman `/profile` |
+| `.settings-tabs` (+ `__tab`, `--active`, `__modul-tag`) | halaman `/settings` |
+| `.role-card`/`.permission-card` (+ `__body`, `__info`, `__name`, `__guard`, `__permissions`, `__delete`) | halaman RBAC |
+| `.rbac-section` (+ `__header`, `__list`) | kolom Roles/Permissions RBAC |
+| `.tag-list` (+ `__item`, `__name`, `__delete`) | halaman `/tags` |
+| `.activity-feed` (+ `__item`, `__dot`, `__body`, `__meta`) `.quick-link` (+ `__icon`, `__label`) | dashboard + landing |
+| `.dashboard-hero`, `dashboard-stats`, `dashboard-grid`, `dashboard-quick-links`, `dashboard-extension-widgets` | halaman `/dashboard` |
+| `.landing`, `landing-hero` (+ `__title`, `__desc`), `landing-grid`, `landing-quick-links`, `landing-welcome`, `feature-card` (+ `__title`, `__desc`, `__link`) | landing `/` |
+| `.security-row` (+ `__label`, `__value`) `.profile-sessions__empty` | section Security/Sessions profile |
+| `.api-docs`/`.hooks-docs`/`.tenants-docs` (+ `__hero`, `__title`) `.endpoint-group` | halaman dokumentasi |
+| `.markas` (+ `__trigger`, `__menu`, `__item`) | menu "Mark as" SampleTasks |
+| `.qr-result` (+ `__image`, `__download`) `.pdf-preview` (+ `__download`, `__frame`) | hasil tool |
+
 ## Referensi yang sudah semantik (preseden)
 
 - `lib/small-table.tsx` — `small-table`, `small-table-list`, `small-table-detail`,
@@ -143,7 +170,7 @@ Rollout bertahap (prioritas tinggi→rendah):
 - [x] `lib/ui.tsx` — seluruh komponen core diberi blok semantik
 - [x] `app/components/*` — Sidebar, Topbar, UserDropdown, StatCard, ModuleWidgets, NotificationButton, ThemeToggleButton
 - [x] `lib/master-detail.tsx`, `lib/small-table.tsx` — konsistensi blok
-- [ ] `app/(app)/*` halaman lainnya + landing (`/`, `api`, `hooks`, `tenants`)
+- [x] `app/(app)/*` halaman lainnya + landing (`/`, `api`, `hooks`, `tenants`)
 - [ ] `lib/extensions/renderer.tsx` — kontainer area ekstensi
 
 Saat membuat modul baru: pakai kosakata blok di atas (mis. `.module-item__…`),

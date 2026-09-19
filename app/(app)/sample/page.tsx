@@ -180,20 +180,20 @@ export default function SamplePage() {
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          className="modal__backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
           onClick={() => {
             setOpen(false);
             setEditing(null);
           }}
         >
           <div
-            className="w-full max-w-md rounded-xl border border-line-soft bg-surface-raised p-5 shadow-card"
+            className="modal__dialog w-full max-w-md rounded-xl border border-line-soft bg-surface-raised p-5 shadow-card"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="mb-4 text-sm font-semibold text-ink">
+            <h2 className="modal__title mb-4 text-sm font-semibold text-ink">
               {editing ? `Edit Sample #${editing.id}` : "Create Sample"}
             </h2>
-            <div className="space-y-3">
+            <div className="modal__body space-y-3">
               <Field label="Nama">
                 <Input
                   value={name}
@@ -234,7 +234,7 @@ export default function SamplePage() {
                 <ErrorNotice message={error} />
               </div>
             )}
-            <div className="mt-4 flex justify-end gap-2">
+            <div className="modal__actions mt-4 flex justify-end gap-2">
               <Button
                 variant="secondary"
                 onClick={() => {
@@ -269,7 +269,7 @@ export default function SamplePage() {
         tabHideKeys={["ulid", "name"]}
         renderHeader={(it) => (
           <span className="flex items-center gap-2">
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+            <span className="status-pill status-pill--neutral rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
               {it.status}
             </span>
             <span>#{it.id}</span>

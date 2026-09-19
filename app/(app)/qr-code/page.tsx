@@ -71,13 +71,13 @@ export default function QrCodePage() {
       </Card>
 
       {result && (
-        <Card className="flex flex-col items-center gap-3">
+        <Card className="qr-result flex flex-col items-center gap-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={result} alt="QR Code" width={size} height={size} />
+          <img className="qr-result__image" src={result} alt="QR Code" width={size} height={size} />
           <a
             href={result}
             download="qr-code.png"
-            className="text-sm text-accent-strong hover:underline"
+            className="qr-result__download text-sm text-accent-strong hover:underline"
           >
             Unduh PNG
           </a>

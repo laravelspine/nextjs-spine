@@ -64,17 +64,17 @@ export default function PdfPage() {
       {error && <ErrorNotice message={error} />}
 
       {pdfUrl && (
-        <div className="space-y-3">
+        <div className="pdf-preview space-y-3">
           <a
             href={pdfUrl}
             download="spine-demo.pdf"
-            className="inline-block rounded-md bg-surface-overlay px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-line"
+            className="pdf-preview__download inline-block rounded-md bg-surface-overlay px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-line"
           >
             Unduh PDF
           </a>
           <iframe
             src={pdfUrl}
-            className="h-96 w-full rounded-xl border border-line-soft"
+            className="pdf-preview__frame h-96 w-full rounded-xl border border-line-soft"
           />
         </div>
       )}

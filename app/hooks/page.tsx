@@ -22,9 +22,9 @@ const events = [
 
 export default function HooksPage() {
   return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold">Registry Hook</h1>
+    <div className="hooks-docs space-y-6">
+      <header className="hooks-docs__hero">
+        <h1 className="hooks-docs__title text-2xl font-bold">Registry Hook</h1>
         <p className="mt-2 text-sm text-ink-muted">
           Semua titik ekstensi Spine memakai{" "}
           <code className="text-accent-strong">Laravel Events</code>. Listener
@@ -34,31 +34,31 @@ export default function HooksPage() {
       </header>
 
       <div className="overflow-x-auto rounded-lg border border-line-soft">
-        <table className="w-full text-sm">
-          <thead className="bg-surface-raised text-left text-ink-faint">
-            <tr>
-              <th className="px-4 py-2 font-medium">Event</th>
-              <th className="px-4 py-2 font-medium">Kapan</th>
-              <th className="px-4 py-2 font-medium">Dispatcher</th>
+        <table className="data-table w-full text-sm">
+          <thead className="data-table__head bg-surface-raised text-left text-ink-faint">
+            <tr className="data-table__row">
+              <th className="data-table__head-cell px-4 py-2 font-medium">Event</th>
+              <th className="data-table__head-cell px-4 py-2 font-medium">Kapan</th>
+              <th className="data-table__head-cell px-4 py-2 font-medium">Dispatcher</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-line-soft">
+          <tbody className="data-table__body divide-y divide-line-soft">
             {events.map(([name, when, from]) => (
-              <tr key={name}>
-                <td className="px-4 py-2 font-mono text-accent-strong">
+              <tr key={name} className="data-table__row">
+                <td className="data-table__cell px-4 py-2 font-mono text-accent-strong">
                   Spine\Events\{name}
                 </td>
-                <td className="px-4 py-2 text-ink-muted">{when}</td>
-                <td className="px-4 py-2 font-mono text-ink-faint">{from}</td>
+                <td className="data-table__cell px-4 py-2 text-ink-muted">{when}</td>
+                <td className="data-table__cell px-4 py-2 font-mono text-ink-faint">{from}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <div className="rounded-lg border border-line-soft bg-surface-raised p-4 text-sm">
-        <h2 className="font-semibold text-accent-strong">Contoh listener</h2>
-        <pre className="mt-2 overflow-x-auto text-xs text-ink-muted">{`// app/Providers/EventServiceProvider.php
+      <div className="docs-card rounded-lg border border-line-soft bg-surface-raised p-4 text-sm">
+        <h2 className="docs-card__title font-semibold text-accent-strong">Contoh listener</h2>
+        <pre className="docs-card__code mt-2 overflow-x-auto text-xs text-ink-muted">{`// app/Providers/EventServiceProvider.php
 use Spine\\Events\\PdfCreating;
 
 public function boot(): void

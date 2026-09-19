@@ -59,23 +59,23 @@ export default function ActivityLogsPage() {
       {logs.length === 0 ? (
         <EmptyState message="Belum ada aktivitas." />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-line-soft">
-          <table className="w-full text-sm">
-            <thead className="bg-surface-raised text-left text-ink-faint">
-              <tr>
-                <th className="px-4 py-2 font-medium">#</th>
-                <th className="px-4 py-2 font-medium">Deskripsi</th>
-                <th className="px-4 py-2 font-medium">Subject</th>
-                <th className="px-4 py-2 font-medium">Oleh</th>
-                <th className="px-4 py-2 font-medium">Waktu</th>
+        <div className="data-table-wrap overflow-x-auto rounded-xl border border-line-soft">
+          <table className="data-table w-full text-sm">
+            <thead className="data-table__head bg-surface-raised text-left text-ink-faint">
+              <tr className="data-table__row">
+                <th className="data-table__head-cell px-4 py-2 font-medium">#</th>
+                <th className="data-table__head-cell px-4 py-2 font-medium">Deskripsi</th>
+                <th className="data-table__head-cell px-4 py-2 font-medium">Subject</th>
+                <th className="data-table__head-cell px-4 py-2 font-medium">Oleh</th>
+                <th className="data-table__head-cell px-4 py-2 font-medium">Waktu</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-line-soft">
+            <tbody className="data-table__body divide-y divide-line-soft">
               {logs.map((log) => (
-                <tr key={log.id}>
-                  <td className="px-4 py-2 text-ink-faint">{log.id}</td>
-                  <td className="px-4 py-2 text-ink">{log.description}</td>
-                  <td className="px-4 py-2">
+                <tr key={log.id} className="data-table__row">
+                  <td className="data-table__cell px-4 py-2 text-ink-faint">{log.id}</td>
+                  <td className="data-table__cell px-4 py-2 text-ink">{log.description}</td>
+                  <td className="data-table__cell px-4 py-2">
                     {log.subject_type ? (
                       <Badge tone={toneFor(log.subject_type)}>
                         {log.subject_type}:{log.subject_id}
@@ -84,8 +84,8 @@ export default function ActivityLogsPage() {
                       <span className="text-ink-faint">—</span>
                     )}
                   </td>
-                  <td className="px-4 py-2 text-ink-muted">{log.causer_id ?? "—"}</td>
-                  <td className="px-4 py-2 text-ink-muted">
+                  <td className="data-table__cell px-4 py-2 text-ink-muted">{log.causer_id ?? "—"}</td>
+                  <td className="data-table__cell px-4 py-2 text-ink-muted">
                     {log.created_at
                       ? new Date(log.created_at).toLocaleString("id-ID")
                       : "—"}

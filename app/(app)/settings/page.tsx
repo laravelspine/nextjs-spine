@@ -180,7 +180,7 @@ export default function SettingsPage() {
       {(tab || extTab) && (
         <div className="flex flex-col gap-6 lg:flex-row">
           {/* Tab nav (kiri) — pola NextAdmin profile */}
-          <nav className="flex w-full shrink-0 gap-2 lg:w-64 lg:flex-col">
+          <nav className="settings-tabs flex w-full shrink-0 gap-2 lg:w-64 lg:flex-col">
             {tabs.map((t) => {
               const isActive = t.slug === active;
               return (
@@ -189,9 +189,9 @@ export default function SettingsPage() {
                   type="button"
                   onClick={() => setActive(t.slug)}
                   className={
-                    "flex items-center gap-3 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors " +
+                    "settings-tabs__tab flex items-center gap-3 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors " +
                     (isActive
-                      ? "border-accent/40 bg-accent-soft/40 text-ink"
+                      ? "settings-tabs__tab--active border-accent/40 bg-accent-soft/40 text-ink"
                       : "border-line-soft bg-surface-raised text-ink-muted hover:text-ink")
                   }
                 >
@@ -209,15 +209,15 @@ export default function SettingsPage() {
                   type="button"
                   onClick={() => setActive(key)}
                   className={
-                    "flex items-center gap-3 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors " +
+                    "settings-tabs__tab flex items-center gap-3 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors " +
                     (isActive
-                      ? "border-accent/40 bg-accent-soft/40 text-ink"
+                      ? "settings-tabs__tab--active border-accent/40 bg-accent-soft/40 text-ink"
                       : "border-line-soft bg-surface-raised text-ink-muted hover:text-ink")
                   }
                 >
                   {e.icon && <span className="text-base">{e.icon}</span>}
                   {t(e.label)}
-                  <span className="ml-auto text-[10px] uppercase tracking-wider text-accent-strong">
+                  <span className="settings-tabs__modul-tag ml-auto text-[10px] uppercase tracking-wider text-accent-strong">
                     modul
                   </span>
                 </button>

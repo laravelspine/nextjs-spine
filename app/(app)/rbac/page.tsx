@@ -114,8 +114,8 @@ export default function RbacPage() {
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Roles */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
+          <section className="rbac-section">
+            <div className="rbac-section__header flex items-center justify-between mb-4">
               <h2 className="text-lg font-medium">{t("rbac.roles")}</h2>
               <Button onClick={() => setShowCreateRole(true)}>{t("rbac.add_role")}</Button>
             </div>
@@ -123,14 +123,14 @@ export default function RbacPage() {
             {roles.length === 0 ? (
               <EmptyState message={t("common.no_data")} />
             ) : (
-              <div className="space-y-3">
+              <div className="rbac-section__list space-y-3">
                 {roles.map((role) => (
-                  <Card key={role.id} className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="text-sm font-medium text-ink">{role.name}</div>
-                        <div className="text-xs text-ink-faint mt-1">{role.guard_name}</div>
-                        <div className="text-xs text-ink-muted mt-1">
+                  <Card key={role.id} className="role-card p-4">
+                    <div className="role-card__body flex items-start justify-between">
+                      <div className="role-card__info">
+                        <div className="role-card__name text-sm font-medium text-ink">{role.name}</div>
+                        <div className="role-card__guard text-xs text-ink-faint mt-1">{role.guard_name}</div>
+                        <div className="role-card__permissions text-xs text-ink-muted mt-1">
                           {role.permissions?.length > 0
                             ? role.permissions.join(", ")
                             : t("rbac.assigned_permissions")}
@@ -138,7 +138,7 @@ export default function RbacPage() {
                       </div>
                       <button
                         onClick={() => handleDeleteRole(role.id)}
-                        className="text-sm text-danger hover:underline"
+                        className="role-card__delete text-sm text-danger hover:underline"
                       >
                         {t("common.delete")}
                       </button>
@@ -150,8 +150,8 @@ export default function RbacPage() {
           </section>
 
           {/* Permissions */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
+          <section className="rbac-section">
+            <div className="rbac-section__header flex items-center justify-between mb-4">
               <h2 className="text-lg font-medium">{t("rbac.permissions")}</h2>
               <Button onClick={() => setShowCreatePerm(true)}>{t("rbac.add_permission")}</Button>
             </div>
@@ -159,17 +159,17 @@ export default function RbacPage() {
             {permissions.length === 0 ? (
               <EmptyState message={t("common.no_data")} />
             ) : (
-              <div className="space-y-3">
+              <div className="rbac-section__list space-y-3">
                 {permissions.map((perm) => (
-                  <Card key={perm.id} className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="text-sm font-medium text-ink">{perm.name}</div>
-                        <div className="text-xs text-ink-faint mt-1">{perm.guard_name}</div>
+                  <Card key={perm.id} className="permission-card p-4">
+                    <div className="permission-card__body flex items-start justify-between">
+                      <div className="permission-card__info">
+                        <div className="permission-card__name text-sm font-medium text-ink">{perm.name}</div>
+                        <div className="permission-card__guard text-xs text-ink-faint mt-1">{perm.guard_name}</div>
                       </div>
                       <button
                         onClick={() => handleDeletePermission(perm.id)}
-                        className="text-sm text-danger hover:underline"
+                        className="permission-card__delete text-sm text-danger hover:underline"
                       >
                         {t("common.delete")}
                       </button>
@@ -186,7 +186,7 @@ export default function RbacPage() {
       {showCreateRole && (
         <Card title={t("rbac.add_role")}>
           <form onSubmit={handleCreateRole} className="space-y-4">
-            <div>
+            <div className="form-field">
               <label className="mb-1 block text-sm font-medium text-ink">{t("rbac.role_name")}</label>
               <Input
                 type="text"
@@ -195,7 +195,7 @@ export default function RbacPage() {
                 required
               />
             </div>
-            <div className="flex gap-2 justify-end">
+            <div className="form-field__actions flex gap-2 justify-end">
               <Button type="button" variant="secondary" onClick={() => setShowCreateRole(false)}>
                 {t("common.cancel")}
               </Button>
@@ -209,7 +209,7 @@ export default function RbacPage() {
       {showCreatePerm && (
         <Card title={t("rbac.add_permission")}>
           <form onSubmit={handleCreatePerm} className="space-y-4">
-            <div>
+            <div className="form-field">
               <label className="mb-1 block text-sm font-medium text-ink">{t("rbac.permission_name")}</label>
               <Input
                 type="text"
@@ -218,7 +218,7 @@ export default function RbacPage() {
                 required
               />
             </div>
-            <div className="flex gap-2 justify-end">
+            <div className="form-field__actions flex gap-2 justify-end">
               <Button type="button" variant="secondary" onClick={() => setShowCreatePerm(false)}>
                 {t("common.cancel")}
               </Button>

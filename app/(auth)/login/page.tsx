@@ -38,8 +38,8 @@ export default function LoginPage() {
 
   return (
     <div className="mx-auto max-w-sm space-y-6 pt-12">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-ink">Masuk</h1>
+      <div className="auth-heading text-center">
+        <h1 className="auth-heading__title text-2xl font-bold text-ink">Masuk</h1>
         <p className="mt-1 text-sm text-ink-muted">
           Demo: <code className="text-accent-strong">demo@spine.test</code> /{" "}
           <code className="text-accent-strong">password</code>
@@ -75,7 +75,7 @@ export default function LoginPage() {
         </form>
       </Card>
 
-      <p className="text-center text-sm text-ink-muted">
+      <p className="auth-footer text-center text-sm text-ink-muted">
         Belum punya akun?{" "}
         <Link href="/register" className="text-accent-strong hover:underline">
           Daftar

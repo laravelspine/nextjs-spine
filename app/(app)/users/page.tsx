@@ -91,28 +91,28 @@ export default function UsersPage() {
       ) : users.length === 0 ? (
         <EmptyState message={t("common.no_data")} />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-line-soft bg-surface-raised">
-          <table className="w-full text-sm">
-            <thead className="bg-surface-raised text-left text-xs uppercase tracking-wider text-ink-faint">
-              <tr>
-                <th className="px-4 py-2 font-medium">{t("users.name")}</th>
-                <th className="px-4 py-2 font-medium">{t("users.email")}</th>
-                <th className="px-4 py-2 font-medium">{t("users.roles")}</th>
-                <th className="px-4 py-2 font-medium">{t("users.actions")}</th>
+        <div className="data-table-wrap overflow-x-auto rounded-xl border border-line-soft bg-surface-raised">
+          <table className="data-table w-full text-sm">
+            <thead className="data-table__head bg-surface-raised text-left text-xs uppercase tracking-wider text-ink-faint">
+              <tr className="data-table__row">
+                <th className="data-table__head-cell px-4 py-2 font-medium">{t("users.name")}</th>
+                <th className="data-table__head-cell px-4 py-2 font-medium">{t("users.email")}</th>
+                <th className="data-table__head-cell px-4 py-2 font-medium">{t("users.roles")}</th>
+                <th className="data-table__head-cell px-4 py-2 font-medium">{t("users.actions")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-line-soft">
+            <tbody className="data-table__body divide-y divide-line-soft">
               {users.map((user) => (
-                <tr key={user.id} className="hover:bg-surface-overlay">
-                  <td className="px-4 py-3 text-ink font-medium">{user.name}</td>
-                  <td className="px-4 py-3 text-ink-muted">{user.email}</td>
-                  <td className="px-4 py-3 text-ink-muted">
+                <tr key={user.id} className="data-table__row hover:bg-surface-overlay">
+                  <td className="data-table__cell px-4 py-3 text-ink font-medium">{user.name}</td>
+                  <td className="data-table__cell px-4 py-3 text-ink-muted">{user.email}</td>
+                  <td className="data-table__cell px-4 py-3 text-ink-muted">
                     {user.roles?.join(", ") || "—"}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="data-table__cell px-4 py-3">
                     <button
                       onClick={() => handleDelete(user.id)}
-                      className="text-sm text-danger hover:underline"
+                      className="user-list__delete text-sm text-danger hover:underline"
                     >
                       {t("common.delete")}
                     </button>
@@ -127,7 +127,7 @@ export default function UsersPage() {
       {showCreate && (
         <Card title={t("users.create_user")}>
           <form onSubmit={handleCreate} className="space-y-4">
-            <div>
+            <div className="form-field">
               <label className="mb-1 block text-sm font-medium text-ink">{t("users.name")}</label>
               <Input
                 type="text"
@@ -136,7 +136,7 @@ export default function UsersPage() {
                 required
               />
             </div>
-            <div>
+            <div className="form-field">
               <label className="mb-1 block text-sm font-medium text-ink">{t("users.email")}</label>
               <Input
                 type="email"
@@ -145,7 +145,7 @@ export default function UsersPage() {
                 required
               />
             </div>
-            <div>
+            <div className="form-field">
               <label className="mb-1 block text-sm font-medium text-ink">{t("users.password")}</label>
               <Input
                 type="password"
@@ -155,7 +155,7 @@ export default function UsersPage() {
                 minLength={8}
               />
             </div>
-            <div>
+            <div className="form-field">
               <label className="mb-1 block text-sm font-medium text-ink">{t("users.roles")}</label>
               <Input
                 type="text"
@@ -164,7 +164,7 @@ export default function UsersPage() {
                 placeholder={t("users.roles_placeholder")}
               />
             </div>
-            <div className="flex gap-2 justify-end">
+            <div className="form-field__actions flex gap-2 justify-end">
               <Button type="button" variant="secondary" onClick={() => setShowCreate(false)}>
                 {t("common.cancel")}
               </Button>

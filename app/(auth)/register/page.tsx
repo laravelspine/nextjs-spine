@@ -39,9 +39,9 @@ export default function RegisterPage() {
 
   return (
     <div className="mx-auto max-w-sm space-y-6 pt-12">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-ink">Daftar</h1>
-        <p className="mt-1 text-sm text-ink-muted">Buat akun baru di Spine</p>
+      <div className="auth-heading text-center">
+        <h1 className="auth-heading__title text-2xl font-bold text-ink">Daftar</h1>
+        <p className="auth-heading__desc mt-1 text-sm text-ink-muted">Buat akun baru di Spine</p>
       </div>
 
       <Card>
@@ -83,7 +83,7 @@ export default function RegisterPage() {
         </form>
       </Card>
 
-      <p className="text-center text-sm text-ink-muted">
+      <p className="auth-footer text-center text-sm text-ink-muted">
         Sudah punya akun?{" "}
         <Link href="/login" className="text-accent-strong hover:underline">
           Masuk

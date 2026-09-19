@@ -78,13 +78,13 @@ export default function TagsPage() {
       {tags.length === 0 ? (
         <EmptyState message="Belum ada tag." />
       ) : (
-        <ul className="divide-y divide-line-soft rounded-xl border border-line-soft bg-surface-raised">
+        <ul className="tag-list divide-y divide-line-soft rounded-xl border border-line-soft bg-surface-raised">
           {tags.map((tag) => (
-            <li key={tag.id} className="flex items-center justify-between px-4 py-3">
-              <span className="text-ink">{tag.name}</span>
+            <li key={tag.id} className="tag-list__item flex items-center justify-between px-4 py-3">
+              <span className="tag-list__name text-ink">{tag.name}</span>
               <button
                 onClick={() => onDelete(tag.id)}
-                className="text-sm text-danger hover:underline"
+                className="tag-list__delete text-sm text-danger hover:underline"
               >
                 Hapus
               </button>
