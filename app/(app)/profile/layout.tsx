@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { PageHeader } from "@/lib/ui";
-import { useI18n } from "@/lib/i18n-context";
 import { ExtensionSlot, t as tExt, useExtensions } from "@/lib/extensions";
 import Link from "next/link";
 
@@ -12,20 +11,18 @@ interface TabItem {
   slug: string;
   href: string;
   icon: string;
-  labelKey: string;
-  label?: string | { namespace: string; key: string };
+  label: string | { namespace: string; key: string };
 }
 
 const CORE_TABS: TabItem[] = [
-  { slug: "overview", href: "/profile/overview", icon: "👤", labelKey: "profile.overview" },
-  { slug: "security", href: "/profile/security", icon: "🔒", labelKey: "profile.security" },
-  { slug: "language", href: "/profile/language", icon: "🌐", labelKey: "profile.language" },
+  { slug: "overview", href: "/profile/overview", icon: "👤", label: "profile.overview" },
+  { slug: "security", href: "/profile/security", icon: "🔒", label: "profile.security" },
+  { slug: "language", href: "/profile/language", icon: "🌐", label: "profile.language" },
 ];
 
 export default function ProfileLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user } = useAuth();
-  const { t } = useI18n();
   // Tab ekstensi UI dari modul frontend (register via context.ui.tabs.register).
   const extTabs = useExtensions("profile.tabs");
 
@@ -42,7 +39,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
 
   return (
     <div className="space-y-6">
-      <PageHeader title={t("profile.title")} desc={t("profile.description")} />
+      <PageHeader title={tExt("profile.title")} desc={tExt("profile.description")} />
 
       {user && (
         <div className="profile-card rounded-xl border border-line-soft bg-surface-raised p-5">
@@ -75,7 +72,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
                 }
               >
                 <span className="text-base">{tb.icon}</span>
-                <span>{isExt ? tExt(tb.label) : t(tb.labelKey)}</span>
+                <span>{tExt(tb.label)}</span>
                 {isExt && (
                   <span className="profile-tabs__modul-tag ml-auto text-[10px] uppercase tracking-wider text-accent-strong">
                     modul
@@ -100,4 +97,5 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
     </div>
   );
 }
+
 

@@ -1,11 +1,14 @@
 import type { Locale } from "@/lib/i18n";
-import { getLocale } from "@/lib/i18n";
+import { getLocale, t as coreT } from "@/lib/i18n";
 import type { Label } from "./types";
 
 /**
  * i18n minimal — modul membawa kamus namespace sendiri (mis. "referrals"),
  * core hanya resolve label. Bahasa UI repo ini: Indonesia (default),
  * tetapi kontrak tidak mengunci bahasa — module boleh bawa bahasa lain.
+ *
+ * `t()` unified resolver: cek dict modul dulu, fallback ke core dict.
+ * Profile, settings, dan sidebar semua pakai resolver ini.
  */
 const dict = new Map<string, string>();
 
@@ -20,16 +23,20 @@ export function addTranslations(
   }
 }
 
-/** Resolve Label → string tampil. Fallback: key, lalu string mentah. */
+/** Resolve Label → string tampil. Cek dict modul dulu, fallback ke core dict. */
 export function t(label: Label): string {
   const locale = getLocale();
   // dukung juga string dot-notation (mis. "module.sample.tabs.sample")
   if (typeof label === "string") {
-    return dict.get(`${locale}.${label}`) ?? dict.get(`en.${label}`) ?? label;
+    return (
+      dict.get(`${locale}.${label}`) ??
+      dict.get(`en.${label}`) ??
+      coreT(label)
+    );
   }
   return (
     dict.get(`${locale}.${label.namespace}.${label.key}`) ??
     dict.get(`en.${label.namespace}.${label.key}`) ??
-    label.key
+    coreT(label)
   );
 }
