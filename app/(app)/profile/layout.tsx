@@ -75,7 +75,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
                 }
               >
                 <span className="text-base">{tb.icon}</span>
-                <span>{tExt(tb.label ?? (tb as TabItem).labelKey)}</span>
+                <span>{isExt ? tExt(tb.label) : t(tb.labelKey)}</span>
                 {isExt && (
                   <span className="profile-tabs__modul-tag ml-auto text-[10px] uppercase tracking-wider text-accent-strong">
                     modul
