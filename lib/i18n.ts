@@ -59,9 +59,17 @@ export type Label = string | { namespace: string; key: string };
 
 export function t(key: Label, params?: Record<string, string>): string {
   if (typeof key === "object") {
-    const dict = translations[currentLocale] as Record<string, Record<string, unknown>>;
-    const ns = dict?.[key.namespace];
-    const value = ns?.[key.key];
+    const dict = translations[currentLocale];
+    const parts = key.namespace.split(".");
+    let obj: unknown = dict;
+    for (const p of parts) {
+      if (obj && typeof obj === "object" && p in (obj as Record<string, unknown>)) {
+        obj = (obj as Record<string, unknown>)[p];
+      } else {
+        return key.key;
+      }
+    }
+    const value = (obj as Record<string, unknown>)?.[key.key];
     if (typeof value === "string") return value;
     return key.key;
   }
