@@ -130,6 +130,7 @@ Kosakata blok lintas halaman (pakai untuk halaman baru alih-alih kelas generik):
 | `.api-docs`/`.hooks-docs`/`.tenants-docs` (+ `__hero`, `__title`) `.endpoint-group` | halaman dokumentasi |
 | `.markas` (+ `__trigger`, `__menu`, `__item`) | menu "Mark as" SampleTasks |
 | `.qr-result` (+ `__image`, `__download`) `.pdf-preview` (+ `__download`, `__frame`) | hasil tool |
+| `.extension-slot` (+ `--fallback` ringan) | `ExtensionSlot` (`lib/extensions/renderer.tsx`) — kontainer area ekstensi UI |
 
 ## Referensi yang sudah semantik (preseden)
 
@@ -171,7 +172,7 @@ Rollout bertahap (prioritas tinggi→rendah):
 - [x] `app/components/*` — Sidebar, Topbar, UserDropdown, StatCard, ModuleWidgets, NotificationButton, ThemeToggleButton
 - [x] `lib/master-detail.tsx`, `lib/small-table.tsx` — konsistensi blok
 - [x] `app/(app)/*` halaman lainnya + landing (`/`, `api`, `hooks`, `tenants`)
-- [ ] `lib/extensions/renderer.tsx` — kontainer area ekstensi
+- [x] `lib/extensions/renderer.tsx` — kontainer area ekstensi
 
 Saat membuat modul baru: pakai kosakata blok di atas (mis. `.module-item__…`),
 dan jangan perkenalkan pola penamaan baru tanpa memperbarui dokumen ini.

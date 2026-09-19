@@ -20,8 +20,14 @@ export function ExtensionSlot({
 }) {
   const Comp = component as React.ComponentType<Record<string, unknown>>;
   return (
-    <Suspense fallback={fallback ?? <p className="text-sm text-ink-muted">Memuat...</p>}>
-      <Comp {...props} />
+    <Suspense
+      fallback={
+        fallback ?? <p className="extension-slot__fallback text-sm text-ink-muted">Memuat...</p>
+      }
+    >
+      <div className="extension-slot">
+        <Comp {...props} />
+      </div>
     </Suspense>
   );
 }
