@@ -36,7 +36,7 @@ function Item({ href, label, icon }: { href: string; label: string; icon?: strin
     <Link
       href={href}
       className={cx(
-        "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
+        "sidebar__item flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
         active
           ? "bg-accent-soft font-medium text-accent-strong"
           : "text-ink-muted hover:bg-surface-overlay hover:text-ink"
@@ -50,7 +50,7 @@ function Item({ href, label, icon }: { href: string; label: string; icon?: strin
 
 function GroupTitle({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-ink-faint">
+    <div className="sidebar__group-title px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-ink-faint">
       {children}
     </div>
   );
@@ -63,15 +63,15 @@ export default function Sidebar() {
   const { locale, setLocale, t } = useI18n();
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col border-r border-line-soft bg-surface-raised">
-      <div className="px-4 py-4 flex items-center justify-between">
+    <aside className="sidebar flex w-60 shrink-0 flex-col border-r border-line-soft bg-surface-raised">
+      <div className="sidebar__brand px-4 py-4 flex items-center justify-between">
         <Link href="/" className="text-lg font-bold tracking-tight">
           Spine<span className="text-accent">.</span>
         </Link>
         <select
           value={locale}
           onChange={(e) => setLocale(e.target.value as any)}
-          className="text-xs rounded-md border border-line bg-surface-raised px-2 py-1 text-ink-muted focus:border-accent focus:outline-none"
+          className="sidebar__locale text-xs rounded-md border border-line bg-surface-raised px-2 py-1 text-ink-muted focus:border-accent focus:outline-none"
           title="Language"
         >
           <option value="en">EN</option>
@@ -82,8 +82,8 @@ export default function Sidebar() {
         </select>
       </div>
 
-      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-2">
-        <div className="space-y-1">
+      <nav className="sidebar__nav flex-1 space-y-6 overflow-y-auto px-3 py-2">
+        <div className="sidebar__group space-y-1">
           <GroupTitle>Spine</GroupTitle>
           {core.map((i) => (
             <Item key={i.href} href={i.href} label={t(i.key)} />
@@ -91,7 +91,7 @@ export default function Sidebar() {
         </div>
 
         {user && (
-          <div className="space-y-1">
+          <div className="sidebar__group space-y-1">
             <GroupTitle>{t("nav.examples")}</GroupTitle>
             {examples.map((i) => (
               <Item key={i.href} href={i.href} label={t(i.key)} />
@@ -100,7 +100,7 @@ export default function Sidebar() {
         )}
 
         {moduleMenu.length > 0 && (
-          <div className="space-y-1">
+          <div className="sidebar__group space-y-1">
             <GroupTitle>{t("nav.modules")}</GroupTitle>
             {moduleMenu.map((i) => (
               <Item key={i.slug} href={i.href} label={i.label} />
@@ -109,7 +109,7 @@ export default function Sidebar() {
         )}
 
         {navExt.length > 0 && (
-          <div className="space-y-1">
+          <div className="sidebar__group space-y-1">
             <GroupTitle>{t("nav.extensions")}</GroupTitle>
             {navExt.map((i) => (
               <Item key={i.id} href={i.href} label={typeof i.label === "string" ? i.label : i.label.key} icon={i.icon} />
@@ -118,7 +118,7 @@ export default function Sidebar() {
         )}
       </nav>
 
-      <div className="border-t border-line-soft px-3 py-3">
+      <div className="sidebar__footer border-t border-line-soft px-3 py-3">
         {loading || user ? null : (
           <div className="space-y-2">
             <Link

@@ -20,19 +20,19 @@ export function StatCard({
   hint?: string;
 }) {
   return (
-    <div className="rounded-xl border border-line-soft bg-surface-raised p-5">
-      <div className="text-[11px] font-medium uppercase tracking-wider text-ink-faint">
+    <div className="stat-card rounded-xl border border-line-soft bg-surface-raised p-5">
+      <div className="stat-card__label text-[11px] font-medium uppercase tracking-wider text-ink-faint">
         {label}
       </div>
       <div
         className={
-          "mt-2 text-3xl font-bold tracking-tight " +
+          "stat-card__value mt-2 text-3xl font-bold tracking-tight " +
           (accent ? "text-accent-strong" : "text-ink")
         }
       >
         {value}
       </div>
-      {hint && <div className="mt-1 text-xs text-ink-faint">{hint}</div>}
+      {hint && <div className="stat-card__hint mt-1 text-xs text-ink-faint">{hint}</div>}
     </div>
   );
 }

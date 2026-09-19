@@ -33,23 +33,23 @@ export default function UserDropdown() {
   }
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="user-dropdown relative">
       <button
         type="button"
         onClick={() => setOpen(!open)}
         aria-label="Menu user"
-        className="flex h-10 w-10 items-center justify-center rounded-lg border border-line-soft bg-surface-raised font-semibold text-accent-strong transition-colors hover:text-accent"
+        className="user-dropdown__trigger flex h-10 w-10 items-center justify-center rounded-lg border border-line-soft bg-surface-raised font-semibold text-accent-strong transition-colors hover:text-accent"
       >
         {initial}
       </button>
 
       {open && (
-        <div className="absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl border border-line-soft bg-surface-raised shadow-lg">
-          <div className="border-b border-line-soft px-4 py-3">
+        <div className="user-dropdown__menu absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl border border-line-soft bg-surface-raised shadow-lg">
+          <div className="user-dropdown__identity border-b border-line-soft px-4 py-3">
             <p className="truncate text-sm font-medium text-ink">{user.name}</p>
             <p className="truncate text-xs text-ink-faint">{user.email}</p>
           </div>
-          <div className="p-1.5">
+          <div className="user-dropdown__links p-1.5">
             <Link
               href="/profile"
               onClick={() => setOpen(false)}

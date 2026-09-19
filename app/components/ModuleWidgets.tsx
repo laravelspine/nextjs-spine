@@ -28,19 +28,19 @@ function ModuleWidgetCard({ widget }: { widget: ModuleWidget }) {
   }, [widget.api]);
 
   return (
-    <Card>
-      <h3 className="mb-3 text-sm font-semibold text-ink">{widget.title}</h3>
+    <Card className="module-widget">
+      <h3 className="module-widget__title mb-3 text-sm font-semibold text-ink">{widget.title}</h3>
       {error ? (
         <p className="text-xs text-danger">{error}</p>
       ) : rows.length === 0 ? (
         <p className="text-xs text-ink-muted">Tidak ada data.</p>
       ) : (
-        <ul className="space-y-2">
+        <ul className="module-widget__list space-y-2">
           {rows.map((r, i) => {
             const obj = r as Record<string, unknown>;
             const name = obj.name ?? obj.title ?? obj.label ?? JSON.stringify(obj);
             return (
-              <li key={i} className="flex items-center justify-between text-sm">
+              <li key={i} className="module-widget__item flex items-center justify-between text-sm">
                 <span className="text-ink">{String(name)}</span>
                 {obj.id !== undefined && (
                   <span className="text-xs text-ink-faint">#{String(obj.id)}</span>
@@ -60,7 +60,7 @@ export function ModuleWidgets() {
   if (widgets.length === 0) return null;
 
   return (
-    <div className="space-y-4">
+    <div className="module-widgets space-y-4">
       {widgets.map((w) => (
         <ModuleWidgetCard key={w.id} widget={w} />
       ))}

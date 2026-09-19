@@ -9,7 +9,7 @@ export function NotificationButton() {
     <button
       type="button"
       aria-label="Notifikasi"
-      className="flex h-10 w-10 items-center justify-center rounded-lg border border-line-soft bg-surface-raised text-ink-muted transition-colors hover:text-ink"
+      className="notification-button flex h-10 w-10 items-center justify-center rounded-lg border border-line-soft bg-surface-raised text-ink-muted transition-colors hover:text-ink"
     >
       <svg
         width="18"

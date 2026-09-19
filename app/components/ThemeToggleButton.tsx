@@ -16,7 +16,7 @@ export function ThemeToggleButton() {
       <button
         type="button"
         aria-label="Ganti tema"
-        className="flex h-10 w-10 items-center justify-center rounded-lg border border-line-soft bg-surface-raised text-ink-muted transition-colors hover:text-ink"
+        className="theme-toggle flex h-10 w-10 items-center justify-center rounded-lg border border-line-soft bg-surface-raised text-ink-muted transition-colors hover:text-ink"
       />
     );
   }
@@ -26,7 +26,7 @@ export function ThemeToggleButton() {
       type="button"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
       aria-label="Ganti tema"
-      className="flex h-10 w-10 items-center justify-center rounded-lg border border-line-soft bg-surface-raised text-ink-muted transition-colors hover:text-ink"
+      className="theme-toggle flex h-10 w-10 items-center justify-center rounded-lg border border-line-soft bg-surface-raised text-ink-muted transition-colors hover:text-ink"
     >
       {resolvedTheme === "dark" ? (
         /* matahari (light) */

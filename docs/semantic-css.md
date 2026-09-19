@@ -64,6 +64,18 @@ Aturan:
 | `ErrorNotice` | `.error-notice` | — |
 | `Toggler` | `.toggle` | `.toggle__track` `.toggle__thumb` |
 
+## Komponen shell (`app/components/*`)
+
+| Komponen | Blok | Elemen |
+|---|---|---|
+| `Sidebar` | `.sidebar` | `.sidebar__brand` `.sidebar__locale` `.sidebar__nav` `.sidebar__group` `.sidebar__group-title` `.sidebar__item` `.sidebar__footer` |
+| `Topbar` | `.topbar` | `.topbar__title` `.topbar__actions` |
+| `UserDropdown` | `.user-dropdown` | `.user-dropdown__trigger` `.user-dropdown__menu` `.user-dropdown__identity` `.user-dropdown__links` |
+| `StatCard` | `.stat-card` | `.stat-card__label` `.stat-card__value` `.stat-card__hint` |
+| `ModuleWidgets` | `.module-widgets` | `.module-widget` `+` `.module-widget__title` `.module-widget__list` `.module-widget__item` |
+| `NotificationButton` | `.notification-button` | — |
+| `ThemeToggleButton` | `.theme-toggle` | — |
+
 ## Pola markup halaman `modules/` (contoh baku)
 
 ```html
@@ -115,7 +127,7 @@ Rollout bertahap (prioritas tinggi→rendah):
 
 - [ ] `app/(app)/modules/page.tsx` — tuntas (contoh baku di atas)
 - [x] `lib/ui.tsx` — seluruh komponen core diberi blok semantik
-- [ ] `app/components/*` — Sidebar, Topbar, UserDropdown, StatCard, ModuleWidgets, NotificationButton, ThemeToggleButton
+- [x] `app/components/*` — Sidebar, Topbar, UserDropdown, StatCard, ModuleWidgets, NotificationButton, ThemeToggleButton
 - [ ] `lib/master-detail.tsx`, `lib/small-table.tsx` — konsistensi blok
 - [ ] `app/(app)/*` halaman lainnya + landing (`/`, `api`, `hooks`, `tenants`)
 - [ ] `lib/extensions/renderer.tsx` — kontainer area ekstensi
