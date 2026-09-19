@@ -1,3 +1,5 @@
+import type { Locale } from "@/lib/i18n";
+import { getLocale } from "@/lib/i18n";
 import type { Label } from "./types";
 
 /**
@@ -8,17 +10,26 @@ import type { Label } from "./types";
 const dict = new Map<string, string>();
 
 /** Tambahkan satu blok terjemahan: messages key → string di namespace `ns`. */
-export function addTranslations(ns: string, messages: Record<string, string>) {
+export function addTranslations(
+  ns: string,
+  messages: Record<string, string>,
+  locale: Locale = "en"
+) {
   for (const [key, value] of Object.entries(messages)) {
-    dict.set(`${ns}.${key}`, value);
+    dict.set(`${locale}.${ns}.${key}`, value);
   }
 }
 
 /** Resolve Label → string tampil. Fallback: key, lalu string mentah. */
 export function t(label: Label): string {
+  const locale = getLocale();
   // dukung juga string dot-notation (mis. "module.sample.tabs.sample")
   if (typeof label === "string") {
-    return dict.get(label) ?? label;
+    return dict.get(`${locale}.${label}`) ?? dict.get(`en.${label}`) ?? label;
   }
-  return dict.get(`${label.namespace}.${label.key}`) ?? label.key;
+  return (
+    dict.get(`${locale}.${label.namespace}.${label.key}`) ??
+    dict.get(`en.${label.namespace}.${label.key}`) ??
+    label.key
+  );
 }

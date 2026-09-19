@@ -1,3 +1,4 @@
+import type { Locale } from "@/lib/i18n";
 import type {
   NavigationExtension,
   SectionExtension,
@@ -13,6 +14,8 @@ export interface SpineModule {
   id: string;
   name: string;
   version: string;
+  /** Terjemahan per-locale (locale → key → string). Opsional; jika tidak ada, modul tetap jalan tapi label tetap bahasa Inggris. */
+  translations?: Partial<Record<Locale, Record<string, string>>>;
   register(context: ModuleContext): void;
 }
 

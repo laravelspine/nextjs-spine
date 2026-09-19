@@ -1,5 +1,6 @@
 import { register } from "@/lib/extensions/registry";
 import { addTranslations, t } from "@/lib/extensions/i18n";
+import { locales } from "@/lib/i18n";
 import type {
   NavigationExtension,
   SectionExtension,
@@ -32,6 +33,12 @@ export function createModuleContext(module: SpineModule): ModuleContext {
 /** Muat (register) satu kumpulan module. Panggil saat bundle tiba. */
 export function loadModules(modules: SpineModule[]) {
   for (const m of modules) {
+    // Daftarkan terjemahan per-locale (jika modul menyediakan).
+    if (m.translations) {
+      for (const [locale, messages] of Object.entries(m.translations)) {
+        addTranslations("module." + m.id, messages as Record<string, string>, locale as typeof locales[number]);
+      }
+    }
     m.register(createModuleContext(m));
   }
 }
