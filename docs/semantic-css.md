@@ -56,10 +56,10 @@ Aturan:
 |---|---|---|
 | `Button` | `.btn` | `.btn--primary` `.btn--secondary` `.btn--ghost` `.btn--danger` |
 | `Badge` | `.badge` | `.badge--accent` `.badge--neutral` `.badge--danger` `.badge--success` `.badge--warning` `.badge--info` |
-| `Card` | `.card` | `.card__header` `.card__body` |
+| `Card` | `.card` | `.card__header` `.card__title` `.card__body` |
 | `Field` | `.field` | `.field__label` |
 | `Input` / `Textarea` | `.input` | — |
-| `PageHeader` | `.page-header` | `.page-header__title` `.page-header__desc` |
+| `PageHeader` | `.page-header` | `.page-header__content` `.page-header__title` `.page-header__desc` |
 | `EmptyState` | `.empty-state` | — |
 | `ErrorNotice` | `.error-notice` | — |
 | `Toggler` | `.toggle` | `.toggle__track` `.toggle__thumb` |
@@ -114,7 +114,7 @@ Aturan:
 Rollout bertahap (prioritas tinggi→rendah):
 
 - [ ] `app/(app)/modules/page.tsx` — tuntas (contoh baku di atas)
-- [ ] `lib/ui.tsx` — seluruh komponen core diberi blok semantik
+- [x] `lib/ui.tsx` — seluruh komponen core diberi blok semantik
 - [ ] `app/components/*` — Sidebar, Topbar, UserDropdown, StatCard, ModuleWidgets, NotificationButton, ThemeToggleButton
 - [ ] `lib/master-detail.tsx`, `lib/small-table.tsx` — konsistensi blok
 - [ ] `app/(app)/*` halaman lainnya + landing (`/`, `api`, `hooks`, `tenants`)

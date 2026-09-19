@@ -15,13 +15,13 @@ export function cx(...parts: (string | false | null | undefined)[]) {
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 
 const buttonBase =
-  "inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+  "btn inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 const buttonVariants: Record<ButtonVariant, string> = {
-  primary: "bg-accent text-accent-ink hover:bg-accent-strong",
-  secondary: "bg-surface-overlay text-ink hover:bg-line",
-  ghost: "text-ink-muted hover:text-ink hover:bg-surface-overlay",
-  danger: "bg-danger/10 text-danger border border-danger/30 hover:bg-danger/20",
+  primary: "btn--primary bg-accent text-accent-ink hover:bg-accent-strong",
+  secondary: "btn--secondary bg-surface-overlay text-ink hover:bg-line",
+  ghost: "btn--ghost text-ink-muted hover:text-ink hover:bg-surface-overlay",
+  danger: "btn--danger bg-danger/10 text-danger border border-danger/30 hover:bg-danger/20",
 };
 
 export function Button({
@@ -37,7 +37,7 @@ export function Button({
 /* ---------- Input / Textarea ---------- */
 
 const fieldBase =
-  "w-full rounded-md border border-line bg-surface-raised px-3 py-2 text-sm text-ink placeholder:text-ink-faint outline-none transition-colors focus:border-accent";
+  "input w-full rounded-md border border-line bg-surface-raised px-3 py-2 text-sm text-ink placeholder:text-ink-faint outline-none transition-colors focus:border-accent";
 
 export function Input({
   className,
@@ -63,8 +63,8 @@ export function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <label className="mb-1 block text-sm font-medium text-ink">{label}</label>
+    <div className="field">
+      <label className="field__label mb-1 block text-sm font-medium text-ink">{label}</label>
       {children}
     </div>
   );
@@ -86,17 +86,17 @@ export function Card({
   return (
     <div
       className={cx(
-        "rounded-xl border border-line-soft bg-surface-raised shadow-card",
+        "card rounded-xl border border-line-soft bg-surface-raised shadow-card",
         className
       )}
     >
       {(title || action) && (
-        <div className="flex items-center justify-between border-b border-line-soft px-5 py-3">
-          {title && <h3 className="text-sm font-semibold text-ink">{title}</h3>}
+        <div className="card__header flex items-center justify-between border-b border-line-soft px-5 py-3">
+          {title && <h3 className="card__title text-sm font-semibold text-ink">{title}</h3>}
           {action}
         </div>
       )}
-      <div className="p-5">{children}</div>
+      <div className="card__body p-5">{children}</div>
     </div>
   );
 }
@@ -106,12 +106,12 @@ export function Card({
 type BadgeTone = "accent" | "neutral" | "danger" | "success" | "warning" | "info";
 
 const badgeTones: Record<BadgeTone, string> = {
-  accent: "bg-accent-soft text-accent-strong",
-  neutral: "bg-surface-overlay text-ink-muted",
-  danger: "bg-danger/10 text-danger",
-  success: "bg-success/10 text-success",
-  warning: "bg-warning/10 text-warning",
-  info: "bg-info/10 text-info",
+  accent: "badge--accent bg-accent-soft text-accent-strong",
+  neutral: "badge--neutral bg-surface-overlay text-ink-muted",
+  danger: "badge--danger bg-danger/10 text-danger",
+  success: "badge--success bg-success/10 text-success",
+  warning: "badge--warning bg-warning/10 text-warning",
+  info: "badge--info bg-info/10 text-info",
 };
 
 export function Badge({
@@ -124,7 +124,7 @@ export function Badge({
   return (
     <span
       className={cx(
-        "inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium",
+        "badge inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium",
         badgeTones[tone]
       )}
     >
@@ -145,10 +145,10 @@ export function PageHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="mb-8 flex items-start justify-between gap-4">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-ink">{title}</h1>
-        {desc && <p className="mt-1 text-sm text-ink-muted">{desc}</p>}
+    <div className="page-header mb-8 flex items-start justify-between gap-4">
+      <div className="page-header__content">
+        <h1 className="page-header__title text-2xl font-bold tracking-tight text-ink">{title}</h1>
+        {desc && <p className="page-header__desc mt-1 text-sm text-ink-muted">{desc}</p>}
       </div>
       {action}
     </div>
@@ -159,7 +159,7 @@ export function PageHeader({
 
 export function EmptyState({ message }: { message: string }) {
   return (
-    <div className="rounded-xl border border-dashed border-line-soft px-6 py-12 text-center text-sm text-ink-faint">
+    <div className="empty-state rounded-xl border border-dashed border-line-soft px-6 py-12 text-center text-sm text-ink-faint">
       {message}
     </div>
   );
@@ -169,7 +169,7 @@ export function EmptyState({ message }: { message: string }) {
 
 export function ErrorNotice({ message }: { message: string }) {
   return (
-    <div className="rounded-md border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-danger">
+    <div className="error-notice rounded-md border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-danger">
       {message}
     </div>
   );
