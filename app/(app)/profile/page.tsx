@@ -1,24 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n-context";
+import { useModuleExtensions } from "@/lib/module-extensions";
 import { Badge, Button, Card, PageHeader } from "@/lib/ui";
-import { ExtensionSlot, t, useExtensions } from "@/lib/extensions";
-import { api } from "@/lib/api";
+import Link from "next/link";
 
 /**
  * /profile — halaman core Profile.
- * Core mendefinisikan tab dasar (Overview/Security/Sessions/Language); modul
- * menambah tab/section lewat UI Extension Registry (`profile.tabs`,
- * `profile.sections`) tanpa menyentuh file ini.
+ *
+ * Pola manifest-based (seperti Settings): tab dasar di-core, tab module
+ * datang dari manifest `profile_tabs[]` via GET /api/v1/modules/extensions.
+ * Core tidak perlu tahu detail module — cukup render apa yang dikirim.
  */
 
-interface ProfileTab {
-  id: string;
+interface TabItem {
+  slug: string;
   label: string;
   icon?: string;
-  render: () => React.ReactNode;
+  href: string;
+  module?: string;
 }
 
 function ProfileOverview() {
@@ -57,8 +59,7 @@ function ProfileSecurity() {
     <Card title="Security">
       <p className="text-sm text-ink-muted">
         Ubah sandi, 2FA, dan recovery code ditangani oleh backend/modul
-        keamanan. Core hanya menyediakan wadah — modul dapat mendaftarkan
-        section sendiri lewat <code className="text-accent-strong">profile.sections</code>.
+        keamanan. Core hanya menyediakan wadah.
       </p>
       <div className="mt-4 space-y-3">
         {[
@@ -74,20 +75,6 @@ function ProfileSecurity() {
             <span className="security-row__value text-xs text-ink-faint">{value}</span>
           </div>
         ))}
-      </div>
-    </Card>
-  );
-}
-
-function ProfileSessions() {
-  return (
-    <Card title="Sessions">
-      <p className="text-sm text-ink-muted">
-        Daftar sesi aktif (perangkat + lokasi) bisa diekspos modul/endpoint
-        backend. Saat ini daftar sesi belum tersedia di API /api/v1.
-      </p>
-      <div className="profile-sessions__empty mt-4 rounded-lg border border-dashed border-line-soft px-4 py-6 text-center text-sm text-ink-faint">
-        Belum ada daftar sesi.
       </div>
     </Card>
   );
@@ -140,34 +127,27 @@ function ProfileLanguage() {
 
 export default function ProfilePage() {
   const { user } = useAuth();
-  const extTabs = useExtensions("profile.tabs");
-  const sections = useExtensions("profile.sections");
   const { t } = useI18n();
+  const { profile_tabs: extTabs } = useModuleExtensions();
 
-  const coreTabs: ProfileTab[] = [
-    { id: "overview", label: t("profile.overview"), render: () => <ProfileOverview /> },
-    { id: "security", label: t("profile.security"), render: () => <ProfileSecurity /> },
-    { id: "sessions", label: t("profile.sessions"), render: () => <ProfileSessions /> },
-    { id: "language", label: t("profile.language"), render: () => <ProfileLanguage /> },
+  // Tab core (hardcode di profile-web, bukan module)
+  const coreTabs: TabItem[] = [
+    { slug: "overview", label: t("profile.overview"), icon: "👤", href: "/profile" },
+    { slug: "security", label: t("profile.security"), icon: "🔒", href: "/profile/security" },
+    { slug: "language", label: t("profile.language"), icon: "🌐", href: "/profile/language" },
   ];
 
-  const extTabDefs: ProfileTab[] = extTabs.map((e) => ({
-    id: e.id,
-    label: typeof e.label === "string" ? e.label : e.label.key,
-    icon: e.icon,
-    render: () => <ExtensionSlot component={e.component} />,
-  }));
-
-  const tabs = [...coreTabs, ...extTabDefs];
-  const [active, setActive] = useState<string>(tabs[0]?.id ?? "");
-
-  // Dukung deep-link /profile#referrals → buka tab ekstensi.
-  useEffect(() => {
-    const h = window.location.hash.replace("#", "");
-    if (h && tabs.some((tb) => tb.id === h)) setActive(h);
-  }, [tabs, active]);
-
-  const activeTab = tabs.find((tb) => tb.id === active) ?? tabs[0];
+  // Gabungkan core + module tabs, urutkan by position
+  const allTabs: TabItem[] = [
+    ...coreTabs,
+    ...extTabs.map((e) => ({
+      slug: e.slug,
+      label: e.label,
+      icon: e.icon,
+      href: e.href,
+      module: e.module,
+    })),
+  ];
 
   return (
     <div className="space-y-6">
@@ -187,41 +167,34 @@ export default function ProfilePage() {
 
       <div className="flex flex-col gap-6 lg:flex-row">
         <nav className="profile-tabs flex w-full shrink-0 gap-2 lg:w-56 lg:flex-col">
-          {tabs.map((tb) => {
-            const isActive = tb.id === active;
+          {allTabs.map((tb) => {
+            const isCore = !tb.module;
             return (
-              <button
-                key={tb.id}
-                type="button"
-                onClick={() => setActive(tb.id)}
+              <Link
+                key={tb.slug}
+                href={tb.href}
                 className={
                   "profile-tabs__tab flex items-center gap-3 rounded-lg border px-3 py-2 text-left text-sm transition-colors " +
-                  (isActive
-                    ? "profile-tabs__tab--active border-accent/40 bg-accent-soft text-accent-strong"
-                    : "border-line-soft bg-surface-overlay text-ink-muted hover:text-ink")
+                  (isCore
+                    ? "border-line-soft bg-surface-overlay text-ink-muted hover:text-ink"
+                    : "border-line-soft bg-surface-raised text-ink-muted hover:text-ink")
                 }
               >
                 {tb.icon && <span className="text-base">{tb.icon}</span>}
                 {tb.label}
-                {!coreTabs.some((c) => c.id === tb.id) && (
+                {!isCore && (
                   <span className="profile-tabs__modul-tag ml-auto text-[10px] uppercase tracking-wider text-accent-strong">
                     modul
                   </span>
                 )}
-              </button>
+              </Link>
             );
           })}
         </nav>
 
         <div className="min-w-0 flex-1">
-          {activeTab && activeTab.render()}
-          {active === "overview" && sections.length > 0 && (
-            <div className="mt-6 space-y-4">
-              {sections.map((s) => (
-                <ExtensionSlot key={s.id} component={s.component} />
-              ))}
-            </div>
-          )}
+          {/* Core tab content — Section component dipindahkan ke Overview */}
+          <ProfileOverview />
         </div>
       </div>
     </div>

@@ -26,8 +26,22 @@ export interface ModuleExtensions {
   menu: ModuleMenuItem[];
   widgets: ModuleWidget[];
   detail_tabs: Record<string, DetailTab[]>;
+  /** Tab Profile dari manifest modul aktif (profile_tabs[]). */
+  profile_tabs: ProfileTab[];
   /** Modul aktif dari backend — dipakai runtime loader untuk boot bundle. */
   modules: ModuleManifestEntry[];
+}
+
+/** Kontrak tab Profile dari manifest modul. */
+export interface ProfileTab {
+  slug: string;
+  label: string;
+  icon?: string;
+  /** Route halaman tab, mis. /profile/my-referral */
+  href: string;
+  position?: number;
+  permission?: string;
+  module: string;
 }
 
 /**
@@ -42,7 +56,7 @@ export interface ModuleExtensions {
  * idempotent: request in-flight dipakai bersama, tidak duplikat.
  */
 
-const EMPTY: ModuleExtensions = { menu: [], widgets: [], detail_tabs: {}, modules: [] };
+const EMPTY: ModuleExtensions = { menu: [], widgets: [], detail_tabs: {}, profile_tabs: [], modules: [] };
 
 interface ExtState {
   ext: ModuleExtensions;
@@ -92,6 +106,7 @@ export async function refreshModuleExtensions(): Promise<ModuleExtensions | null
           menu: res.data?.menu ?? [],
           widgets: res.data?.widgets ?? [],
           detail_tabs: res.data?.detail_tabs ?? {},
+          profile_tabs: res.data?.profile_tabs ?? [],
           modules: res.data?.modules ?? [],
         };
         state = { ext: next, loading: false };
