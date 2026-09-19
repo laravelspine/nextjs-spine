@@ -16,6 +16,7 @@ const core = [
   { href: "/hooks", key: "nav.hooks" },
   { href: "/users", key: "nav.users" },
   { href: "/rbac", key: "nav.rbac" },
+  { href: "/modules", key: "nav.modules" },
 ];
 
 const examples = [

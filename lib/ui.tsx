@@ -42,7 +42,9 @@ const fieldBase =
 export function Input({
   className,
   ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) {
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+  ref?: React.Ref<HTMLInputElement>;
+}) {
   return <input className={cx(fieldBase, className)} {...props} />;
 }
 

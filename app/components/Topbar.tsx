@@ -22,6 +22,7 @@ const titles: Record<string, string> = {
   "/activity-logs": "nav.activity_logs",
   "/users": "nav.users",
   "/rbac": "nav.rbac",
+  "/modules": "nav.modules",
   "/login": "nav.login",
   "/register": "nav.register",
 };
