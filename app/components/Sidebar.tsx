@@ -11,7 +11,7 @@ import { cx } from "@/lib/ui";
 const core = [
   { href: "/", key: "nav.home" },
   { href: "/dashboard", key: "nav.dashboard" },
-  { href: "/profile", key: "nav.profile" },
+  { href: "/profile/overview", key: "nav.profile" },
   { href: "/api", key: "nav.api" },
   { href: "/hooks", key: "nav.hooks" },
   { href: "/users", key: "nav.users" },
