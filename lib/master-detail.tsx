@@ -8,14 +8,14 @@ import { cx } from "@/lib/ui";
 function statusPill(status: string): React.ReactNode {
   const cls =
     status === "done"
-      ? "bg-emerald-100 text-emerald-700"
+      ? "status-pill--done bg-emerald-100 text-emerald-700"
       : status === "in_progress"
-        ? "bg-amber-100 text-amber-700"
+        ? "status-pill--progress bg-amber-100 text-amber-700"
         : status === "pending"
-          ? "bg-slate-100 text-slate-600"
-          : "bg-slate-100 text-slate-600";
+          ? "status-pill--pending bg-slate-100 text-slate-600"
+          : "status-pill--neutral bg-slate-100 text-slate-600";
   return (
-    <span className={"rounded-full px-2 py-0.5 text-xs font-medium " + cls}>
+    <span className={"status-pill rounded-full px-2 py-0.5 text-xs font-medium " + cls}>
       {status.replace(/_/g, " ")}
     </span>
   );
@@ -80,31 +80,33 @@ export function MasterDetail({
   const tab = sortedTabs.find((t) => t.slug === activeTab) ?? sortedTabs[0] ?? null;
 
   return (
-    <div className="flex min-h-0 flex-col gap-4 lg:flex-row">
+    <div className="master-detail flex min-h-0 flex-col gap-4 lg:flex-row">
       {/* List (kiri) — padanan manage.php */}
-      <div className="w-full shrink-0 lg:w-72">
-        <div className="overflow-hidden rounded-xl border border-line-soft bg-surface-raised">
+      <div className="master-detail__list w-full shrink-0 lg:w-72">
+        <div className="master-detail__list-box overflow-hidden rounded-xl border border-line-soft bg-surface-raised">
           {items.length === 0 ? (
             <p className="p-4 text-sm text-ink-muted">{emptyText}</p>
           ) : (
-            <ul className="max-h-[70vh] divide-y divide-line-soft overflow-y-auto">
+            <ul className="master-detail__items max-h-[70vh] divide-y divide-line-soft overflow-y-auto">
               {items.map((it) => {
                 const key = getItemKey(it);
                 const active = key === selectedId;
                 return (
-                  <li key={String(key)}>
+                  <li key={String(key)} className="master-detail__item">
                     <button
                       type="button"
                       onClick={() => setSelectedId(key)}
                       className={cx(
-                        "block w-full px-4 py-3 text-left text-sm transition-colors",
+                        "master-detail__item-button block w-full px-4 py-3 text-left text-sm transition-colors",
                         active
-                          ? "bg-accent-soft text-accent-strong"
+                          ? "master-detail__item-button--active bg-accent-soft text-accent-strong"
                           : "text-ink hover:bg-surface-overlay hover:text-ink"
                       )}
                     >
                       <span className="font-medium">{getItemLabel(it)}</span>
-                      <span className="ml-1 text-xs text-ink-faint">#{String(key)}</span>
+                      <span className="master-detail__item-key ml-1 text-xs text-ink-faint">
+                        #{String(key)}
+                      </span>
                     </button>
                   </li>
                 );
@@ -115,15 +117,15 @@ export function MasterDetail({
       </div>
 
       {/* Panel kanan (detail + tab) — padanan client.php */}
-      <div className="min-w-0 flex-1">
+      <div className="master-detail__detail min-w-0 flex-1">
         {!selected ? (
-          <div className="rounded-xl border border-line-soft bg-surface-raised p-6 text-sm text-ink-muted">
+          <div className="master-detail__detail-empty rounded-xl border border-line-soft bg-surface-raised p-6 text-sm text-ink-muted">
             {emptyText}
           </div>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-line-soft bg-surface-raised">
+          <div className="master-detail__panel overflow-hidden rounded-xl border border-line-soft bg-surface-raised">
             {/* Header: #ID + label */}
-            <div className="flex items-center justify-between border-b border-line-soft px-5 py-4">
+            <div className="master-detail__header flex items-center justify-between border-b border-line-soft px-5 py-4">
               <h2 className="text-base font-semibold text-ink">
                 #{String(getItemKey(selected))} {getItemLabel(selected)}
               </h2>
@@ -131,7 +133,7 @@ export function MasterDetail({
 
             {/* Nav tabs — padanan tabs.php */}
             {sortedTabs.length > 0 && (
-              <nav className="flex flex-wrap gap-1 border-b border-line-soft px-3 py-2">
+              <nav className="master-detail__tabs flex flex-wrap gap-1 border-b border-line-soft px-3 py-2">
                 {sortedTabs.map((t) => {
                   const isActive = t.slug === activeTab;
                   return (
@@ -140,9 +142,9 @@ export function MasterDetail({
                       type="button"
                       onClick={() => setActiveTab(t.slug)}
                       className={cx(
-                        "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors",
+                        "master-detail__tab flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors",
                         isActive
-                          ? "bg-accent-soft font-medium text-accent-strong"
+                          ? "master-detail__tab--active bg-accent-soft font-medium text-accent-strong"
                           : "text-ink-muted hover:bg-surface-overlay hover:text-ink"
                       )}
                     >
@@ -155,7 +157,7 @@ export function MasterDetail({
             )}
 
             {/* Konten tab — padanan $tab['view'] (fetch tab.api) */}
-            <div className="p-5">
+            <div className="master-detail__body p-5">
               {tab ? <TabContent url={getTabUrl(selected, tab)} emptyText={tabEmptyText} /> : null}
             </div>
           </div>
@@ -237,12 +239,13 @@ export function TabContent({
   }, [cacheKey, url, refreshKey, inlineData]);
 
   if (loading) return <TabSkeleton />;
-  if (error) return <p className="text-sm text-danger">{error}</p>;
+  if (error) return <p className="tab-content__error text-sm text-danger">{error}</p>;
 
   // inlineData (overview) dirender langsung — tidak pernah lewat fetch/state.
   const effectiveData = inlineData !== undefined ? inlineData : data;
   const rows = Array.isArray(effectiveData) ? effectiveData : effectiveData ? [effectiveData] : [];
-  if (rows.length === 0) return <p className="text-sm text-ink-muted">{emptyText}</p>;
+  if (rows.length === 0)
+    return <p className="tab-content__empty text-sm text-ink-muted">{emptyText}</p>;
 
   // ARRAY -> tabel (list: tasks, activity, ...). OBJEK TUNGGAL -> vertical dl (overview).
   if (Array.isArray(effectiveData)) {
@@ -251,10 +254,10 @@ export function TabContent({
       (k) => !hideKeys.includes(k)
     );
     return (
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="tab-content__table-wrap overflow-x-auto">
+        <table className="tab-content__table w-full text-sm">
           <thead>
-            <tr className="border-b border-line-soft text-left text-xs uppercase tracking-wider text-ink-faint">
+            <tr className="tab-content__thead-row border-b border-line-soft text-left text-xs uppercase tracking-wider text-ink-faint">
               {keys.map((k) => (
                 <th key={k} className="px-3 py-2 font-medium">
                   {k.replace(/_/g, " ")}
@@ -262,11 +265,11 @@ export function TabContent({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-line-soft">
+          <tbody className="tab-content__tbody divide-y divide-line-soft">
             {objs.map((o, i) => (
-              <tr key={i}>
+              <tr key={i} className="tab-content__row">
                 {keys.map((k) => (
-                  <td key={k} className="px-3 py-2 align-top text-ink">
+                  <td key={k} className="tab-content__cell px-3 py-2 align-top text-ink">
                     {customValue?.[k]
                       ? customValue[k](o[k], o)
                       : k === "status" && typeof o[k] === "string"
@@ -285,18 +288,18 @@ export function TabContent({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="tab-content__dl-wrap space-y-4">
       {rows.map((r, i) => {
         const obj = r as Record<string, unknown>;
         const fields = Object.entries(obj).filter(([k]) => !hideKeys.includes(k));
         return (
-          <dl key={i} className="divide-y divide-line-soft">
+          <dl key={i} className="tab-content__dl divide-y divide-line-soft">
             {fields.map(([k, v]) => (
-              <div key={k} className="flex gap-4 py-2">
-                <dt className="w-36 shrink-0 text-xs uppercase tracking-wider text-ink-faint">
+              <div key={k} className="tab-content__field flex gap-4 py-2">
+                <dt className="tab-content__dt w-36 shrink-0 text-xs uppercase tracking-wider text-ink-faint">
                   {k.replace(/_/g, " ")}
                 </dt>
-                <dd className="text-sm text-ink">
+                <dd className="tab-content__dd text-sm text-ink">
                   {customValue?.[k] ? customValue[k](v, obj) : v === null || v === "" ? "—" : String(v)}
                 </dd>
               </div>

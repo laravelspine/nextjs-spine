@@ -149,7 +149,7 @@ export function SmallTable<T>({
         )}
         <div className="overflow-hidden rounded-xl border border-line-soft bg-surface-raised">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="small-table-list-table w-full text-sm">
               <thead>
                 <tr className="border-b border-line-soft text-left text-xs uppercase tracking-wider text-ink-faint">
                   {visibleCols.map((c) => (
@@ -161,7 +161,7 @@ export function SmallTable<T>({
               </thead>
               <tbody className="divide-y divide-line-soft">
                 {pageItems.length === 0 ? (
-                  <tr>
+                  <tr className="small-table-list-empty">
                     <td
                       colSpan={visibleCols.length}
                       className="px-3 py-4 text-center text-ink-muted"
@@ -207,7 +207,7 @@ export function SmallTable<T>({
           {/* Footer pagination — setting tables_pagination_limit */}
           {filteredItems.length > perPage && (
             <div className="small-table-pagination flex items-center justify-between border-t border-line-soft px-3 py-2 text-xs text-ink-muted">
-              <span>
+              <span className="small-table-pagination__range">
                 {filteredItems.length === 0
                   ? "0"
                   : `${(currentPage - 1) * perPage + 1}-${Math.min(
@@ -216,12 +216,12 @@ export function SmallTable<T>({
                     )}`}{" "}
                 dari {filteredItems.length}
               </span>
-              <div className="flex gap-1">
+              <div className="small-table-pagination__controls flex gap-1">
                 <button
                   type="button"
                   onClick={() => setPage(currentPage - 1)}
                   disabled={currentPage <= 1}
-                  className="rounded px-2 py-1 hover:bg-surface-overlay disabled:opacity-40"
+                  className="small-table-pagination__prev rounded px-2 py-1 hover:bg-surface-overlay disabled:opacity-40"
                 >
                   ‹ Prev
                 </button>
@@ -229,7 +229,7 @@ export function SmallTable<T>({
                   type="button"
                   onClick={() => setPage(currentPage + 1)}
                   disabled={currentPage >= totalPages}
-                  className="rounded px-2 py-1 hover:bg-surface-overlay disabled:opacity-40"
+                  className="small-table-pagination__next rounded px-2 py-1 hover:bg-surface-overlay disabled:opacity-40"
                 >
                   Next ›
                 </button>

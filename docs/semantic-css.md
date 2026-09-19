@@ -107,11 +107,25 @@ Aturan:
 ## Referensi yang sudah semantik (preseden)
 
 - `lib/small-table.tsx` — `small-table`, `small-table-list`, `small-table-detail`,
-  `small-table-detail-header`, `small-table-tabs`, `small-table-toolbar`,
-  `small-table-pagination`. (Gaya kebab tanpa `__`; saat memakai *helpers* ini
-  ikut kelas yang sudah ada, jangan ganti.)
-- `lib/master-detail.tsx` — belum diberi kelas semantik; dijadwalkan pada rollout
-  `lib/` berikutnya.
+  `small-table-detail-header`, `small-table-detail-body`, `small-table-tabs`,
+  `small-table-toolbar`, `small-table-list-row` (+ `--selected`),
+  `small-table-list-col` (+ `--primary`), `small-table-search`,
+  `small-table-list-table`, `small-table-list-empty`,
+  `small-table-pagination` (+ `__range`, `__controls`, `__prev`, `__next`).
+  (Gaya kebab tanpa `__` di blok itu sendiri, `__` untuk elemen dalam; saat
+  memakai *helpers* ini ikut kelas yang sudah ada, jangan ganti.)
+- `lib/master-detail.tsx` — `master-detail`, `master-detail__list`,
+  `master-detail__list-box`, `master-detail__items`, `master-detail__item`,
+  `master-detail__item-button` (+ `--active`), `master-detail__item-key`,
+  `master-detail__detail`, `master-detail__detail-empty`, `master-detail__panel`,
+  `master-detail__header`, `master-detail__tabs`, `master-detail__tab`
+  (+ `--active`), `master-detail__body`.
+- `lib/master-detail.tsx` — `TabContent` & `statusPill`: `tab-content__table`,
+  `tab-content__table-wrap`, `tab-content__thead-row`, `tab-content__tbody`,
+  `tab-content__row`, `tab-content__cell`, `tab-content__dl-wrap`,
+  `tab-content__dl`, `tab-content__field`, `tab-content__dt`, `tab-content__dd`,
+  `tab-content__error`, `tab-content__empty`; `status-pill` (+ `--done`,
+  `--progress`, `--pending`, `--neutral`).
 
 ## Syarat kelulusan (definition of done)
 
@@ -128,7 +142,7 @@ Rollout bertahap (prioritas tinggi→rendah):
 - [ ] `app/(app)/modules/page.tsx` — tuntas (contoh baku di atas)
 - [x] `lib/ui.tsx` — seluruh komponen core diberi blok semantik
 - [x] `app/components/*` — Sidebar, Topbar, UserDropdown, StatCard, ModuleWidgets, NotificationButton, ThemeToggleButton
-- [ ] `lib/master-detail.tsx`, `lib/small-table.tsx` — konsistensi blok
+- [x] `lib/master-detail.tsx`, `lib/small-table.tsx` — konsistensi blok
 - [ ] `app/(app)/*` halaman lainnya + landing (`/`, `api`, `hooks`, `tenants`)
 - [ ] `lib/extensions/renderer.tsx` — kontainer area ekstensi
 
