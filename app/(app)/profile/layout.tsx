@@ -1,10 +1,10 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useModuleExtensions } from "@/lib/module-extensions";
 import { useAuth } from "@/lib/auth-context";
 import { PageHeader } from "@/lib/ui";
 import { useI18n } from "@/lib/i18n-context";
+import { ExtensionSlot, t as tExt, useExtensions } from "@/lib/extensions";
 import Link from "next/link";
 
 /** Tab core Profile — tetap di-core, bukan berasal dari modul. */
@@ -13,7 +13,7 @@ interface TabItem {
   href: string;
   icon: string;
   labelKey: string;
-  isModule?: boolean;
+  label?: string | { namespace: string; key: string };
 }
 
 const CORE_TABS: TabItem[] = [
@@ -26,20 +26,19 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   const pathname = usePathname();
   const { user } = useAuth();
   const { t } = useI18n();
-  const { profile_tabs: extTabs } = useModuleExtensions();
+  // Tab ekstensi UI dari modul frontend (register via context.ui.tabs.register).
+  const extTabs = useExtensions("profile.tabs");
 
-  // Tab dari manifest modul aktif.
-  const moduleTabs = extTabs.map((tab) => ({
-    slug: tab.slug,
-    href: tab.href,
-    icon: tab.icon ?? "📄",
-    labelKey: tab.label,
-    isModule: true,
-  }));
-
-  const allTabs = [...CORE_TABS, ...moduleTabs];
+  const allTabs = [...CORE_TABS, ...extTabs.map((e) => ({
+    slug: e.id,
+    href: `/profile/${e.id}`,
+    icon: e.icon ?? "📄",
+    label: typeof e.label === "string" ? e.label : { namespace: e.label.namespace, key: e.label.key },
+    _ext: e,
+  }))];
 
   const activeSlug = allTabs.find((tb) => pathname.startsWith(tb.href))?.slug ?? null;
+  const activeExt = extTabs.find((e) => pathname === `/profile/${e.id}` || pathname.startsWith(`/profile/${e.id}/`));
 
   return (
     <div className="space-y-6">
@@ -63,6 +62,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
         <nav className="profile-tabs flex w-full shrink-0 gap-2 lg:w-56 lg:flex-col">
           {allTabs.map((tb) => {
             const isActive = activeSlug === tb.slug;
+            const isExt = "_ext" in tb;
             return (
               <Link
                 key={tb.slug}
@@ -75,8 +75,8 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
                 }
               >
                 <span className="text-base">{tb.icon}</span>
-                <span>{t(tb.labelKey)}</span>
-                {tb.isModule && (
+                <span>{tExt(tb.label ?? (tb as TabItem).labelKey)}</span>
+                {isExt && (
                   <span className="profile-tabs__modul-tag ml-auto text-[10px] uppercase tracking-wider text-accent-strong">
                     modul
                   </span>
@@ -86,8 +86,18 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
           })}
         </nav>
 
-        <div className="min-w-0 flex-1">{children}</div>
+        <div className="min-w-0 flex-1">
+          {activeExt ? (
+            <ExtensionSlot
+              component={activeExt.component}
+              fallback={<p className="text-sm text-ink-muted">Memuat...</p>}
+            />
+          ) : (
+            children
+          )}
+        </div>
       </div>
     </div>
   );
 }
+

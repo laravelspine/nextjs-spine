@@ -16,6 +16,9 @@ export function addTranslations(ns: string, messages: Record<string, string>) {
 
 /** Resolve Label → string tampil. Fallback: key, lalu string mentah. */
 export function t(label: Label): string {
-  if (typeof label === "string") return label;
+  // dukung juga string dot-notation (mis. "module.sample.tabs.sample")
+  if (typeof label === "string") {
+    return dict.get(label) ?? label;
+  }
   return dict.get(`${label.namespace}.${label.key}`) ?? label.key;
 }
