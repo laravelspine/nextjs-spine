@@ -73,7 +73,7 @@ Aturan:
 | `UserDropdown` | `.user-dropdown` | `.user-dropdown__trigger` `.user-dropdown__menu` `.user-dropdown__identity` `.user-dropdown__links` |
 | `StatCard` | `.stat-card` | `.stat-card__label` `.stat-card__value` `.stat-card__hint` |
 | `ModuleWidgets` | `.module-widgets` | `.module-widget` `+` `.module-widget__title` `.module-widget__list` `.module-widget__item` |
-| `NotificationButton` | `.notification-button` | — |
+| `NotificationButton` | `.notification-button` | `.notification-button__badge` + `.notification-dropdown` (lihat fase Notifikasi di bawah) |
 | `ThemeToggleButton` | `.theme-toggle` | — |
 
 ## Pola markup halaman `modules/` (contoh baku)
@@ -131,6 +131,8 @@ Kosakata blok lintas halaman (pakai untuk halaman baru alih-alih kelas generik):
 | `.markas` (+ `__trigger`, `__menu`, `__item`) | menu "Mark as" SampleTasks |
 | `.qr-result` (+ `__image`, `__download`) `.pdf-preview` (+ `__download`, `__frame`) | hasil tool |
 | `.extension-slot` (+ `--fallback` ringan) | `ExtensionSlot` (`lib/extensions/renderer.tsx`) — kontainer area ekstensi UI |
+| `.notification-dropdown` (+ `__header`, `__mark-all`, `__list`, `__item` (+ `--unread`), `__item-title`, `__item-body`, `__item-time`, `__empty`, `__footer`) | dropdown bell topbar (`NotificationButton.tsx`) |
+| `.notifications-toolbar`, `.notifications-list` (+ `__item` (+ `--unread`), `__dot`, `__title`, `__body`, `__time`), `.notifications-pagination` | halaman `/notifications` |
 
 ## Referensi yang sudah semantik (preseden)
 
@@ -173,6 +175,7 @@ Rollout bertahap (prioritas tinggi→rendah):
 - [x] `lib/master-detail.tsx`, `lib/small-table.tsx` — konsistensi blok
 - [x] `app/(app)/*` halaman lainnya + landing (`/`, `api`, `hooks`, `tenants`)
 - [x] `lib/extensions/renderer.tsx` — kontainer area ekstensi
+- [x] **Fase Notifikasi** — `NotificationButton.tsx` (dropdown + badge + realtime), halaman `/notifications` (list + pagination)
 
 Saat membuat modul baru: pakai kosakata blok di atas (mis. `.module-item__…`),
 dan jangan perkenalkan pola penamaan baru tanpa memperbarui dokumen ini.

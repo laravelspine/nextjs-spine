@@ -14,6 +14,7 @@ const titles: Record<string, string> = {
   "/hooks": "nav.hooks",
   "/tenants": "nav.tenants",
   "/settings": "nav.settings",
+  "/notifications": "nav.notifications",
   "/meta": "nav.meta",
   "/tags": "nav.tags",
   "/qr-code": "nav.qr_code",

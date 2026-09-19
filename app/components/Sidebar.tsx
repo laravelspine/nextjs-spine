@@ -21,6 +21,7 @@ const core = [
 
 const examples = [
   { href: "/settings", key: "nav.settings" },
+  { href: "/notifications", key: "nav.notifications" },
   { href: "/meta", key: "nav.meta" },
   { href: "/tags", key: "nav.tags" },
   { href: "/qr-code", key: "nav.qr_code" },
