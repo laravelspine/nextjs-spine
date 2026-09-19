@@ -168,5 +168,24 @@
     "welcome": "お帰りなさい",
     "recent_activity": "最近の活動",
     "quick_stats": "クイック統計"
+  },
+  "module": {
+    "sample": {
+      "menu": "サンプル",
+      "title": "サンプル",
+      "widget": "サンプル項目",
+      "tab_overview": "概要",
+      "tab_activity": "活動",
+      "profile_tab": "サンプル"
+    },
+    "sampletasks": {
+      "menu": "サンプルタスク",
+      "title": "サンプルタスク",
+      "widget": "サンプルタスク",
+      "tab_overview": "概要",
+      "tab_activity": "活動",
+      "profile_tab": "サンプルタスク",
+      "tab_tasks": "tab_tasks"
+    }
   }
 }

@@ -168,5 +168,24 @@
     "welcome": "Welcome back",
     "recent_activity": "Recent Activity",
     "quick_stats": "Quick Stats"
+  },
+  "module": {
+    "sample": {
+      "menu": "Sample",
+      "title": "Sample",
+      "widget": "Sample Items",
+      "tab_overview": "Overview",
+      "tab_activity": "Activity",
+      "profile_tab": "Sample"
+    },
+    "sampletasks": {
+      "menu": "Sample Tasks",
+      "title": "Sample Tasks",
+      "widget": "Sample Tasks",
+      "tab_overview": "Overview",
+      "tab_activity": "Activity",
+      "profile_tab": "Sample Tasks",
+      "tab_tasks": "tab_tasks"
+    }
   }
 }

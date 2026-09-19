@@ -168,5 +168,24 @@
     "welcome": "欢迎回来",
     "recent_activity": "最近活动",
     "quick_stats": "快速统计"
+  },
+  "module": {
+    "sample": {
+      "menu": "示例",
+      "title": "示例",
+      "widget": "示例项目",
+      "tab_overview": "概览",
+      "tab_activity": "活动",
+      "profile_tab": "示例"
+    },
+    "sampletasks": {
+      "menu": "示例任务",
+      "title": "示例任务",
+      "widget": "示例任务",
+      "tab_overview": "概览",
+      "tab_activity": "活动",
+      "profile_tab": "示例任务",
+      "tab_tasks": "tab_tasks"
+    }
   }
 }

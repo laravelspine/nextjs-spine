@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useModuleExtensions } from "@/lib/module-extensions";
 import { useAuth } from "@/lib/auth-context";
-import { useExtensions, t } from "@/lib/extensions";
+import { useExtensions } from "@/lib/extensions";
 import { useI18n } from "@/lib/i18n-context";
 import { cx } from "@/lib/ui";
 
@@ -104,7 +104,7 @@ export default function Sidebar() {
           <div className="sidebar__group space-y-1">
             <GroupTitle>{t("nav.modules")}</GroupTitle>
             {moduleMenu.map((i) => (
-              <Item key={i.slug} href={i.href} label={i.label} />
+              <Item key={i.slug} href={i.href} label={t(i.label)} />
             ))}
           </div>
         )}

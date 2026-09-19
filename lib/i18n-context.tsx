@@ -1,12 +1,12 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { Locale, getLocale, setLocale, t } from "@/lib/i18n";
+import { Locale, getLocale, setLocale, t, type Label } from "@/lib/i18n";
 
 interface I18nContextType {
   locale: Locale;
   setLocale: (locale: Locale) => void;
-  t: (key: string, params?: Record<string, string>) => string;
+  t: (key: Label, params?: Record<string, string>) => string;
 }
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);

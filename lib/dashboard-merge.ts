@@ -3,10 +3,12 @@
  * Tipe widget = structural, kompatibel dgn ModuleWidget (services/spine/module-extensions).
  */
 
+import type { Label } from "./i18n";
+
 export interface DashboardWidgetMeta {
   id: string;
   area: string;
-  title: string;
+  title: Label;
   api: string;
   module: string;
 }

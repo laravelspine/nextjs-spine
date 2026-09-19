@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { cx } from "@/lib/ui";
+import { t as translate } from "@/lib/i18n";
+import type { Label } from "@/lib/i18n";
 
 /** Badge status berwarna (padanan label status legacy) — dipakai TabContent list. */
 function statusPill(status: string): React.ReactNode {
@@ -28,7 +30,7 @@ function statusPill(status: string): React.ReactNode {
  */
 export interface DetailTab {
   slug: string;
-  label: string;
+  label: Label;
   icon?: string;
   api: string; // path dengan placeholder {id}, mis. /api/v1/sample/{id}/overview
   position?: number;
@@ -148,8 +150,8 @@ export function MasterDetail({
                           : "text-ink-muted hover:bg-surface-overlay hover:text-ink"
                       )}
                     >
-                      {t.icon && <span className="text-xs">{t.icon}</span>}
-                      {t.label}
+                       {t.icon && <span className="text-xs">{t.icon}</span>}
+                       {translate(t.label)}
                     </button>
                   );
                 })}

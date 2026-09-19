@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { TabContent, type DetailTab } from "@/lib/master-detail";
 import { cx } from "@/lib/ui";
+import { t as translate } from "@/lib/i18n";
 
 /**
  * SmallTable — helper generik list + panel detail (padanan legacy
@@ -277,7 +278,7 @@ export function SmallTable<T>({
                       )}
                     >
                       {t.icon && <span className="text-xs">{t.icon}</span>}
-                      {t.label}
+                      {translate(t.label)}
                     </button>
                   );
                 })}

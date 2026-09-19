@@ -4,6 +4,7 @@ import type { ComponentType } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api, getToken } from "./api";
 import type { ModuleWidget } from "./module-extensions";
+import { t } from "@/lib/i18n";
 
 /**
  * Registry widget DASHBOARD — infrastruktur.
@@ -150,7 +151,7 @@ function QuickLinksBody() {
 function WidgetFallback({ widget }: { widget: ModuleWidget }) {
   return (
     <p className="text-sm text-ink-muted">
-      Widget "{widget.title}" dari modul <em>{widget.module}</em> belum
+      Widget "{t(widget.title)}" dari modul <em>{widget.module}</em> belum
       diimplementasikan di frontend — daftarkan komponennya di registry.
     </p>
   );

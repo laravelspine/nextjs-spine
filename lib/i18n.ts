@@ -55,7 +55,16 @@ export function getLocale(): Locale {
   return currentLocale;
 }
 
-export function t(key: string, params?: Record<string, string>): string {
+export type Label = string | { namespace: string; key: string };
+
+export function t(key: Label, params?: Record<string, string>): string {
+  if (typeof key === "object") {
+    const dict = translations[currentLocale] as Record<string, Record<string, unknown>>;
+    const ns = dict?.[key.namespace];
+    const value = ns?.[key.key];
+    if (typeof value === "string") return value;
+    return key.key;
+  }
   const dict = translations[currentLocale];
   if (!dict) return key;
 

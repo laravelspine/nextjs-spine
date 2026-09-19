@@ -4,6 +4,7 @@ import { useSortable } from "@dnd-kit/react/sortable";
 import type { ModuleWidget } from "./module-extensions";
 import { WidgetBody } from "./dashboard-widget-body";
 import { cx } from "@/lib/ui";
+import { t } from "@/lib/i18n";
 
 /** Grip ikon (drag handle) — dua kolom 6 titik. */
 function GripIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -111,17 +112,17 @@ export function DashboardWidgetCard({
         <button
           ref={handleRef}
           type="button"
-          aria-label={`Drag ${widget.title}`}
+           aria-label={`Drag ${t(widget.title)}`}
           className="cursor-grab touch-none rounded p-0.5 text-ink-faint hover:text-ink-muted active:cursor-grabbing"
         >
           <GripIcon />
         </button>
         <h2 className="min-w-0 flex-1 truncate text-sm font-semibold text-ink">
-          {widget.title}
+          {t(widget.title)}
         </h2>
         <button
           type="button"
-          aria-label={visible ? `Sembunyikan ${widget.title}` : `Tampilkan ${widget.title}`}
+           aria-label={visible ? `Sembunyikan ${t(widget.title)}` : `Tampilkan ${t(widget.title)}`}
           title={visible ? "Sembunyikan widget" : "Tampilkan widget"}
           onClick={() => onToggleVisibility(widget.id)}
           className="rounded p-1 text-ink-faint transition-colors hover:bg-surface-overlay hover:text-ink-muted"

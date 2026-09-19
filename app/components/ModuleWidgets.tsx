@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Card } from "@/lib/ui";
 import { useModuleExtensions, type ModuleWidget } from "@/lib/module-extensions";
+import { t } from "@/lib/i18n";
 
 /**
  * ModuleWidgetPanel — render semua widget modul dari registry.
@@ -29,7 +30,7 @@ function ModuleWidgetCard({ widget }: { widget: ModuleWidget }) {
 
   return (
     <Card className="module-widget">
-      <h3 className="module-widget__title mb-3 text-sm font-semibold text-ink">{widget.title}</h3>
+      <h3 className="module-widget__title mb-3 text-sm font-semibold text-ink">{t(widget.title)}</h3>
       {error ? (
         <p className="text-xs text-danger">{error}</p>
       ) : rows.length === 0 ? (

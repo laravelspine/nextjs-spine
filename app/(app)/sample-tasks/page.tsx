@@ -295,7 +295,7 @@ export default function SampleTasksPage() {
             sampleItems.find((s) => s.id === it.sample_item_id)?.name ?? ""
           }`
         }
-        tabHideKeys={["ulid", "title"]}
+        tabHideKeys={["ulid", "title", "properties"]}
         tabCustomValue={{
           sample_item_id: (v, row) => (
             <span className="text-ink">

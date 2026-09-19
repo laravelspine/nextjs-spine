@@ -24,6 +24,7 @@ import {
 } from "./dashboard-merge";
 import { DashboardWidgetCard } from "./dashboard-widget-card";
 import { cx } from "@/lib/ui";
+import { t } from "@/lib/i18n";
 
 type LayoutMap = Record<string, string[]>;
 
@@ -138,7 +139,7 @@ export function DashboardGrid() {
     setDragging(true);
     const id = event.operation.source?.id;
     const w = widgets.find((x: ModuleWidget) => x.id === id);
-    setDragLabel(w?.title ?? String(id));
+    setDragLabel(w ? t(w.title) : String(id));
   }
 
   function onDragEnd(event: DragEndEvent) {
@@ -246,7 +247,7 @@ export function DashboardGrid() {
                           onChange={() => toggleVisibility(w.id)}
                           className="size-3.5 accent-accent"
                         />
-                        <span className="truncate">{w.title}</span>
+                        <span className="truncate">{t(w.title)}</span>
                       </label>
                     </li>
                   );

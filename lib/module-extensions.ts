@@ -4,10 +4,11 @@ import { useEffect, useSyncExternalStore } from "react";
 import { api, getToken } from "./api";
 import type { DetailTab } from "./master-detail";
 import type { ModuleManifestEntry } from "./modules/types";
+import type { Label } from "./extensions/types";
 
 export interface ModuleMenuItem {
   slug: string;
-  label: string;
+  label: Label;
   icon?: string;
   href: string;
   position?: number;
@@ -17,7 +18,7 @@ export interface ModuleMenuItem {
 export interface ModuleWidget {
   id: string;
   area: string;
-  title: string;
+  title: Label;
   api: string;
   module: string;
 }

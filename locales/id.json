@@ -168,5 +168,24 @@
     "welcome": "Selamat datang kembali",
     "recent_activity": "Aktivitas Terbaru",
     "quick_stats": "Statistik Cepat"
+  },
+  "module": {
+    "sample": {
+      "menu": "Sample",
+      "title": "Sample",
+      "widget": "Item Sample",
+      "tab_overview": "Ikhtisar",
+      "tab_activity": "Aktivitas",
+      "profile_tab": "Sample"
+    },
+    "sampletasks": {
+      "menu": "Tugas Contoh",
+      "title": "Tugas Contoh",
+      "widget": "Tugas Contoh",
+      "tab_overview": "Ikhtisar",
+      "tab_activity": "Aktivitas",
+      "profile_tab": "Tugas Contoh",
+      "tab_tasks": "tab_tasks"
+    }
   }
 }

@@ -168,5 +168,24 @@
     "welcome": "다시 오신 것을 환영합니다",
     "recent_activity": "최근 활동",
     "quick_stats": "빠른 통계"
+  },
+  "module": {
+    "sample": {
+      "menu": "샘플",
+      "title": "샘플",
+      "widget": "샘플 항목",
+      "tab_overview": "개요",
+      "tab_activity": "활동",
+      "profile_tab": "샘플"
+    },
+    "sampletasks": {
+      "menu": "샘플 태스크",
+      "title": "샘플 태스크",
+      "widget": "샘플 태스크",
+      "tab_overview": "개요",
+      "tab_activity": "활동",
+      "profile_tab": "샘플 태스크",
+      "tab_tasks": "tab_tasks"
+    }
   }
 }
