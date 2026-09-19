@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
+import { refreshModuleExtensions } from "@/lib/module-extensions";
 import {
   Badge,
   Button,
@@ -75,6 +76,9 @@ export default function ModulesPage() {
     }
     setBusyId(null);
     load();
+    // Registry bersama (sidebar menu, widget, detail_tabs, runtime boot)
+    // ikut ter-update instan — tanpa reload halaman.
+    refreshModuleExtensions();
   }
 
   async function onUninstall(mod: SpineModule) {
@@ -89,6 +93,7 @@ export default function ModulesPage() {
     }
     setBusyId(null);
     load();
+    refreshModuleExtensions();
   }
 
   async function onInstall(e: React.FormEvent) {
